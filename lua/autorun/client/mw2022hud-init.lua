@@ -14,4 +14,13 @@ MW2022HUD.LeftMargin = 0
 MW2022HUD.TopMargin = 0
 MW2022HUD.BottomMargin = 0
 
+MW2022HUD.Materials = {}
+MW2022HUD.Materials.GradientL = Material("vgui/gradient-l")
+MW2022HUD.Materials.GradientR = Material("vgui/gradient-r")
+MW2022HUD.Materials.GradientU = Material("vgui/gradient_up")
+
 print("MW2022hud")
+
+include("mw2022hud/fonts.lua")
+include("mw2022hud/compass.lua")
+include("mw2022hud/drawsystem.lua")
