@@ -168,7 +168,7 @@ MW2022HUD.Ammo.Draw = function()
         draw.SimpleTextOutlined(MW2022HUD.WeaponData.FireMode, "MW2022AmmoSmall", MW2022HUD.RightMargin - 335 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 62 * MW2022HUD.Scale, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
 
         if MW2022HUD.WeaponData.AmmoTypeAlt != -1 then
-            draw.DrawText("[ " .. MW2022HUD.WeaponData.TotalAmmoAlt .. " ]", "MW2022AmmoSmall", MW2022HUD.RightMargin - 255 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 62 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT)
+            draw.SimpleTextOutlined("[ " .. MW2022HUD.WeaponData.TotalAmmoAlt .. " ]", "MW2022AmmoSmall", MW2022HUD.RightMargin - 255 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 62 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
         end
     end
 end
