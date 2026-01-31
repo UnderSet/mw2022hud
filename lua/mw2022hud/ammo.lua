@@ -148,27 +148,29 @@ MW2022HUD.Ammo.Draw = function()
     
     surface.SetDrawColor(color_white)
     surface.SetMaterial(MW2022HUD.Materials.FireGroups[MW2022HUD.WeaponData.FireType][1])
-    surface.DrawTexturedRect(MW2022HUD.RightMargin - 326 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 66 * MW2022HUD.Scale, 30, 30)
+    surface.DrawTexturedRect(MW2022HUD.RightMargin - 326 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 66 * MW2022HUD.Scale, 30 * MW2022HUD.Scale, 30 * MW2022HUD.Scale)
 
     if MW2022HUD.WeaponData.AmmoTypeAlt != -1 then
         surface.SetDrawColor(color_white)
         surface.SetMaterial(MW2022HUD.Materials.FireGroups[1][1])
-        surface.DrawTexturedRect(MW2022HUD.RightMargin - 293 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 66 * MW2022HUD.Scale, 30, 30)
+        surface.DrawTexturedRect(MW2022HUD.RightMargin - 287 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 66 * MW2022HUD.Scale, 30 * MW2022HUD.Scale, 30 * MW2022HUD.Scale)
+
+        surface.DrawRect(MW2022HUD.RightMargin - 294 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 66 * MW2022HUD.Scale, 1 * MW2022HUD.Scale, 30 * MW2022HUD.Scale)
     end
 
     if MW2022HUD.WeaponData.UBGL then
         draw.NoTexture()
-        surface.DrawRect(MW2022HUD.RightMargin - 292 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 36 * MW2022HUD.Scale, 26, 2)
+        surface.DrawRect(MW2022HUD.RightMargin - 287 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 36 * MW2022HUD.Scale, 26 * MW2022HUD.Scale, 2 * MW2022HUD.Scale)
 
-        draw.SimpleTextOutlined(MW2022HUD.WeaponData.FireMode, "MW2022AmmoSmall", MW2022HUD.RightMargin - 255 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 62 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+        draw.SimpleTextOutlined(MW2022HUD.WeaponData.FireMode, "MW2022AmmoSmall", MW2022HUD.RightMargin - 249 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 62 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
     else
         draw.NoTexture()
-        surface.DrawRect(MW2022HUD.RightMargin - 325 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 36 * MW2022HUD.Scale, 26, 2)
+        surface.DrawRect(MW2022HUD.RightMargin - 325 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 36 * MW2022HUD.Scale, 26 * MW2022HUD.Scale, 2 * MW2022HUD.Scale)
 
         draw.SimpleTextOutlined(MW2022HUD.WeaponData.FireMode, "MW2022AmmoSmall", MW2022HUD.RightMargin - 335 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 62 * MW2022HUD.Scale, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
 
         if MW2022HUD.WeaponData.AmmoTypeAlt != -1 then
-            draw.SimpleTextOutlined("[ " .. MW2022HUD.WeaponData.TotalAmmoAlt .. " ]", "MW2022AmmoSmall", MW2022HUD.RightMargin - 255 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 62 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+            draw.SimpleTextOutlined("[ " .. MW2022HUD.WeaponData.TotalAmmoAlt .. " ]", "MW2022AmmoSmall", MW2022HUD.RightMargin - 249 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 62 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
         end
     end
 end

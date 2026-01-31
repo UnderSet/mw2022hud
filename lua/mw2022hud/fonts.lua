@@ -33,13 +33,23 @@ surface.CreateFont("MW2022GamemodeName", {
     size = 18 * MW2022HUD.Scale,
     weight = 15,
 })
+surface.CreateFont("MW2022GamemodeTime", {
+    font = "Stratum2 BETA Medium",
+    size = 24 * MW2022HUD.Scale,
+    weight = 15,
+})
 surface.CreateFont("MW2022ScoreWinning", {
-    font = "Bahnschrift SemiLight Condensed",
+    font = "Bahnschrift Condensed",
     size = 46 * MW2022HUD.Scale,
     weight = 15,
 })
 surface.CreateFont("MW2022ScoreLosing", {
     font = "Bahnschrift Light Condensed",
     size = 46 * MW2022HUD.Scale,
+    weight = 15,
+})
+surface.CreateFont("MW2022ScoreState", {
+    font = "Stratum2 BETA Medium",
+    size = 19 * MW2022HUD.Scale,
     weight = 15,
 })

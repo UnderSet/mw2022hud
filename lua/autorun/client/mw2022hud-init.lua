@@ -10,14 +10,15 @@ MW2022HUD.SetupBounds = function()
 
     MW2022HUD.Scale = MW2022HUD.ScreenHeight / 1080
 
-    MW2022HUD.BoundsMargin = MW2022HUD.ScreenHeight * 0.07
+    MW2022HUD.XBoundsMargin = MW2022HUD.ScreenHeight * 0.088
+    MW2022HUD.YBoundsMargin = MW2022HUD.ScreenHeight * 0.05
 
     -- CoD locks UI to 16:9 no matter your display aspect ratio.
     -- I will not be doing that, at least for now.
-    MW2022HUD.RightMargin = MW2022HUD.ScreenWidth + (MW2022HUD.XBounds:GetFloat() - 100) / 100 * MW2022HUD.BoundsMargin
-    MW2022HUD.LeftMargin = -((MW2022HUD.XBounds:GetFloat() - 100) / 100 * MW2022HUD.BoundsMargin)
-    MW2022HUD.TopMargin = -((MW2022HUD.YBounds:GetFloat() - 100) / 100 * MW2022HUD.BoundsMargin)
-    MW2022HUD.BottomMargin = MW2022HUD.ScreenHeight + (MW2022HUD.YBounds:GetFloat() - 100) / 100 * MW2022HUD.BoundsMargin
+    MW2022HUD.RightMargin = MW2022HUD.ScreenWidth + (MW2022HUD.XBounds:GetFloat() - 100) / 100 * MW2022HUD.XBoundsMargin
+    MW2022HUD.LeftMargin = -((MW2022HUD.XBounds:GetFloat() - 100) / 100 * MW2022HUD.XBoundsMargin)
+    MW2022HUD.TopMargin = -((MW2022HUD.YBounds:GetFloat() - 100) / 100 * MW2022HUD.YBoundsMargin)
+    MW2022HUD.BottomMargin = MW2022HUD.ScreenHeight + (MW2022HUD.YBounds:GetFloat() - 100) / 100 * MW2022HUD.YBoundsMargin
 end
 
 MW2022HUD.Materials = {}
@@ -27,10 +28,13 @@ MW2022HUD.Materials.GradientU = Material("vgui/gradient_up")
 
 MW2022HUD.NullFunction = function() end
 
+MW2022HUD.SetupBounds()
+
 include("mw2022hud/fonts.lua")
 include("mw2022hud/compass.lua")
 include("mw2022hud/ammo.lua")
 include("mw2022hud/score.lua")
+include("mw2022hud/vitals.lua")
 include("mw2022hud/drawsystem.lua")
 
 cvars.AddChangeCallback("MW2022HUD_XBounds", MW2022HUD.SetupBounds)
