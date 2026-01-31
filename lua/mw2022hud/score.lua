@@ -9,7 +9,7 @@ MW2022HUD.Score.OverrideGamemodeName = "" -- override shown gamemode name, usefu
 MW2022HUD.ScoreData.MaxScore = 65
 MW2022HUD.ScoreData.AllyScore = 17
 MW2022HUD.ScoreData.EnemyScore = 18
-MW2022HUD.ScoreData.EndTime = 0 -- use a format like what CurTime() returns!!!
+MW2022HUD.ScoreData.RemainingTime = 0 -- use a format like what CurTime() returns!!!
 
 MW2022HUD.Materials.Score = Material("iw9ui/hud_score_bar.png")
 MW2022HUD.Materials.ScoreInverse = Material("iw9ui/hud_score_bar_reverse.png")
@@ -37,6 +37,9 @@ local EnemyColorGradient = Color(248,39,0)
 local WinningColor = Color(24, 210, 240)
 local LosingColor = Color(255, 34, 0)
 
+-- Integration-defined function (see mw2022hud/GamemodeIntegrations/beatrun.lua)
+MW2022HUD.Score.SetScores = function() end
+
 MW2022HUD.Score.Draw = function()
     -- debugging, comment at your wish
     -- MW2022HUD.ScoreData.MaxScore = 20
@@ -59,20 +62,22 @@ MW2022HUD.Score.Draw = function()
     local ScoreBalance = MW2022HUD.ScoreData.AllyScore > MW2022HUD.ScoreData.EnemyScore and 1
         or MW2022HUD.ScoreData.AllyScore == MW2022HUD.ScoreData.EnemyScore and 0
         or -1
+    local FormattedTime = string.FormattedTime(MW2022HUD.ScoreData.RemainingTime, "%01i:%02i")
 
     draw.SimpleTextOutlined(MW2022HUD.ScoreData.AllyScore, ScoreBalance == 1 and "MW2022ScoreWinning" or "MW2022ScoreLosing",
         MW2022HUD.LeftMargin + 56 * MW2022HUD.Scale, MW2022HUD.TopMargin + 259 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
     draw.SimpleTextOutlined(MW2022HUD.ScoreData.EnemyScore, ScoreBalance == -1 and "MW2022ScoreWinning" or "MW2022ScoreLosing",
         MW2022HUD.LeftMargin + 56 * MW2022HUD.Scale, MW2022HUD.TopMargin + 331 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-    draw.SimpleTextOutlined(string.FormattedTime(MW2022HUD.ScoreData.EndTime - CurTime(), "%01i:%02i"), "MW2022GamemodeTime",
-        MW2022HUD.LeftMargin + 240 * MW2022HUD.Scale, MW2022HUD.TopMargin + 338 * MW2022HUD.Scale, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-    draw.SimpleTextOutlined(ScoreBalance == 1 and "WINNING" or ScoreBalance == 0 and "TIED" or "LOSING", "MW2022ScoreState",
+        draw.SimpleTextOutlined(ScoreBalance == 1 and "WINNING" or ScoreBalance == 0 and "TIED" or "LOSING", "MW2022ScoreState",
         MW2022HUD.LeftMargin + 240 * MW2022HUD.Scale, MW2022HUD.TopMargin + 288 * MW2022HUD.Scale,
         ScoreBalance == 1 and WinningColor or ScoreBalance == 0 and color_white or LosingColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-
+    if MW2022HUD.ScoreData.RemainingTime >= 0 then 
+        draw.SimpleTextOutlined(FormattedTime, "MW2022GamemodeTime", MW2022HUD.LeftMargin + 240 * MW2022HUD.Scale, MW2022HUD.TopMargin + 338 * MW2022HUD.Scale,
+            color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    end
     -- don't even fucking *think* of touching this stencil mess, we clear?
     render.SetScissorRect(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale, MW2022HUD.TopMargin + 313 * MW2022HUD.Scale,
-        MW2022HUD.LeftMargin + 58 * MW2022HUD.Scale + 188 * MW2022HUD.Scale, MW2022HUD.TopMargin + 335 * MW2022HUD.Scale, true)
+        MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale + 190 * MW2022HUD.Scale, MW2022HUD.TopMargin + 335 * MW2022HUD.Scale, true)
     surface.SetMaterial(MW2022HUD.Materials.Score)
     surface.SetDrawColor(ScoreBG)
     surface.DrawTexturedRect(MW2022HUD.LeftMargin + 60 * MW2022HUD.Scale, MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
@@ -131,3 +136,6 @@ hook.Add("PostGamemodeLoaded", "MW2022HUDGetGamemode", function()
     MW2022HUD.Score.GamemodeName = gmod.GetGamemode().Name
     hook.Remove("PostGamemodeLoaded", "MW2022HUDGetGamemode")
 end)
+
+print(file.Exists("lua/mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() .. ".lua", "GAME"))
+if file.Exists("lua/mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() .. ".lua", "GAME") then include("mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() .. ".lua") end
