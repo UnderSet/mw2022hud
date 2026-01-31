@@ -1,7 +1,7 @@
 MW2022HUD.Score = {}
 MW2022HUD.ScoreData = {}
 
-MW2022HUD.Score.Enabled = true
+MW2022HUD.Score.Enabled = false -- set to true to show, set back to false to hide (duh)
 
 MW2022HUD.Score.GamemodeName = gmod.GetGamemode() and gmod.GetGamemode().Name or ""
 MW2022HUD.Score.OverrideGamemodeName = "" -- override shown gamemode name, useful for say, Beatrun; set to "" (like here) to disable
