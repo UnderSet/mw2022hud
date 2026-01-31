@@ -39,10 +39,10 @@ local LosingColor = Color(255, 34, 0)
 
 MW2022HUD.Score.Draw = function()
     -- debugging, comment at your wish
-    MW2022HUD.ScoreData.MaxScore = 20
-    MW2022HUD.ScoreData.AllyScore = math.Round(CurTime() * 4 % MW2022HUD.ScoreData.MaxScore)
-    MW2022HUD.ScoreData.EnemyScore = MW2022HUD.ScoreData.MaxScore - math.Round(CurTime() * 4 % MW2022HUD.ScoreData.MaxScore)
-    MW2022HUD.ScoreData.EndTime = CurTime() + 404
+    -- MW2022HUD.ScoreData.MaxScore = 20
+    -- MW2022HUD.ScoreData.AllyScore = math.Round(CurTime() * 4 % MW2022HUD.ScoreData.MaxScore)
+    -- MW2022HUD.ScoreData.EnemyScore = MW2022HUD.ScoreData.MaxScore - math.Round(CurTime() * 4 % MW2022HUD.ScoreData.MaxScore)
+    -- MW2022HUD.ScoreData.EndTime = CurTime() + 404
 
     draw.SimpleText(string.upper("// " .. (MW2022HUD.Score.OverrideGamemodeName != "" and MW2022HUD.Score.OverrideGamemodeName or MW2022HUD.Score.GamemodeName)),
         "MW2022GamemodeName", MW2022HUD.LeftMargin + 25 * MW2022HUD.Scale, MW2022HUD.TopMargin + 246 * MW2022HUD.Scale, GamemodeGray, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
