@@ -8,7 +8,13 @@ MW2022HUD.HideElements = {
 
 hook.Add("HUDPaint", "MW2022HUDRun", function()
     -- MW2022's HUD just doesn't render if you're dead lmao
-    if !MW2022HUD.Enable:GetBool() or !LocalPlayer():Alive() then return end
+    if !MW2022HUD.Enable:GetBool() or !LocalPlayer():Alive() then
+        -- reset damage directions
+        MW2022HUD.DamageIndicator.DamageLoc = {}
+        return
+    end
+
+    MW2022HUD.DamageIndicator.Draw()
 
     MW2022HUD.Compass.Draw()
 

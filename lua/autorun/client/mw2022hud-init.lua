@@ -35,7 +35,9 @@ include("mw2022hud/compass.lua")
 include("mw2022hud/ammo.lua")
 include("mw2022hud/score.lua")
 include("mw2022hud/vitals.lua")
+include("mw2022hud/damageindicator.lua")
 include("mw2022hud/drawsystem.lua")
+
 
 cvars.AddChangeCallback("MW2022HUD_XBounds", MW2022HUD.SetupBounds)
 cvars.AddChangeCallback("MW2022HUD_YBounds", MW2022HUD.SetupBounds)
