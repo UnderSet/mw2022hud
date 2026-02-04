@@ -3,6 +3,7 @@ MW2022HUD.Weapon = nil
 MW2022HUD.WeaponData = {}
 
 local OutlineBlack = Color(66,66,66,55)
+local BackgroundBlack = Color(29,29,29,207)
 local ReserveGray = Color(166,177,179)
 local LowRed = Color(201,73,0)
 local LowYellow = Color(237,201,16)
@@ -127,8 +128,12 @@ MW2022HUD.Ammo.Draw = function()
 
     if !IsValid(MW2022HUD.Weapon) then return end
 
-    MW2022HUD.DrawWeaponIcon(MW2022HUD.Weapon, MW2022HUD.RightMargin - 510 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 180 * MW2022HUD.Scale, 300 * MW2022HUD.Scale, 150 * MW2022HUD.Scale)
+    MW2022HUD.DrawWeaponIcon(MW2022HUD.Weapon, MW2022HUD.RightMargin - 500 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 173 * MW2022HUD.Scale, 280 * MW2022HUD.Scale, 140 * MW2022HUD.Scale)
     -- surface.DrawOutlinedRect(MW2022HUD.RightMargin - 510 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 180 * MW2022HUD.Scale, 300 * MW2022HUD.Scale, 150 * MW2022HUD.Scale)
+
+    draw.SimpleTextOutlined(MW2022HUD.Weapon:GetPrintName(), "MW2022AmmoSmall", MW2022HUD.RightMargin - 400 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 181 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    draw.SimpleTextOutlined(MW2022HUD.Weapon.ArcCW and MW2022HUD.Weapon.Trivia_Calibre or language.GetPhrase(game.GetAmmoName(MW2022HUD.WeaponData.AmmoType) or "Melee/Tool"), "MW2022AmmoType", MW2022HUD.RightMargin - 402 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 161 * MW2022HUD.Scale, ReserveGray,
+        TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
 
     if MW2022HUD.WeaponData.AmmoType == -1 then return end
 
@@ -142,6 +147,22 @@ MW2022HUD.Ammo.Draw = function()
         draw.SimpleTextOutlined("NO AMMO", "MW2022AmmoNotice", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 90 * MW2022HUD.Scale, LowRed, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
     elseif MW2022HUD.WeaponData.CurrentMag < MW2022HUD.WeaponData.MaxMag * 0.3 and MW2022HUD.WeaponData.Reserve <= 0 then
         draw.SimpleTextOutlined("LOW AMMO", "MW2022AmmoNotice", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 90 * MW2022HUD.Scale, LowYellow, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    elseif MW2022HUD.WeaponData.CurrentMag < MW2022HUD.WeaponData.MaxMag * 0.3 then
+        local reloadkey = string.upper(input.LookupBinding("+reload") or "???")
+
+        surface.SetFont("MW2022Keybinds")
+        local boxw, boxh = select(1, surface.GetTextSize(reloadkey))
+        boxw = boxw + 12 * MW2022HUD.Scale
+        boxh = boxh - 2 * MW2022HUD.Scale
+
+        surface.SetFont("MW2022AmmoNotice")
+        local offsetw = boxw + select(1, surface.GetTextSize("RELOAD")) + 5 * MW2022HUD.Scale
+
+        draw.RoundedBox(4, MW2022HUD.ScreenWidth / 2 - offsetw / 2 - 1 * MW2022HUD.Scale, MW2022HUD.ScreenHeight / 2 + 91 * MW2022HUD.Scale, boxw + 2 * MW2022HUD.Scale, boxh + 2 * MW2022HUD.Scale, BackgroundBlack)
+        draw.RoundedBox(4, MW2022HUD.ScreenWidth / 2 - offsetw / 2, MW2022HUD.ScreenHeight / 2 + 92 * MW2022HUD.Scale, boxw, boxh, color_white)
+        draw.SimpleText(reloadkey, "MW2022Keybinds", MW2022HUD.ScreenWidth / 2 - offsetw / 2 + 5 * MW2022HUD.Scale, MW2022HUD.ScreenHeight / 2 + 91 * MW2022HUD.Scale, color_black, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+
+        draw.SimpleTextOutlined("RELOAD", "MW2022AmmoNotice", MW2022HUD.ScreenWidth / 2 - offsetw / 2 + 29 * MW2022HUD.Scale, MW2022HUD.ScreenHeight / 2 + 88 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
     end
 
     -- draw.SimpleTextOutlined("Fire Type: Full-Auto", "MW2022AmmoSmall", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 100 * MW2022HUD.Scale, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 2, ReserveGray)

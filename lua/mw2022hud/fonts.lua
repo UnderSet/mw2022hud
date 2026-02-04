@@ -28,6 +28,11 @@ surface.CreateFont("MW2022AmmoNotice", {
     size = 29 * MW2022HUD.Scale,
     weight = 15,
 })
+surface.CreateFont("MW2022AmmoType", {
+    font = "Stratum2 BETA Medium",
+    size = 21 * MW2022HUD.Scale,
+    weight = 15,
+})
 surface.CreateFont("MW2022GamemodeName", {
     font = "Stratum2 BETA Medium",
     size = 18 * MW2022HUD.Scale,
@@ -51,5 +56,10 @@ surface.CreateFont("MW2022ScoreLosing", {
 surface.CreateFont("MW2022ScoreState", {
     font = "Stratum2 BETA Medium",
     size = 19 * MW2022HUD.Scale,
+    weight = 15,
+})
+surface.CreateFont("MW2022Keybinds", {
+    font = "Noto Sans Bold",
+    size = 24 * MW2022HUD.Scale,
     weight = 15,
 })
