@@ -3,7 +3,7 @@ MW2022HUD.DamageIndicator = {}
 MW2022HUD.Materials.Damaged = Material("iw9ui/hit_direction.png", "smooth")
 MW2022HUD.Materials.DamagedArmor = Material("iw9ui/hit_direction_armor.png", "smooth")
 
-MW2022HUD.DamageIndicator.DamageAng = {{30, false, CurTime() + 6}, {90, true, CurTime() + 6}, {127, true, CurTime() + 6}}
+MW2022HUD.DamageIndicator.DamageAng = {}
 
 local armordmg = Color(190,190,190)
 local healthdmg = Color(255,255,255) -- literally the same as color_white, yes, but see below for why
