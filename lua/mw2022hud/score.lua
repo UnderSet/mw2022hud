@@ -137,4 +137,6 @@ hook.Add("PostGamemodeLoaded", "MW2022HUDGetGamemode", function()
     hook.Remove("PostGamemodeLoaded", "MW2022HUDGetGamemode")
 end)
 
-if file.Exists("lua/mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() .. ".lua", "GAME") then include("mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() .. ".lua") end
+if file.Exists("lua/mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() .. ".lua", "GAME") then
+    include("mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() .. ".lua")
+end

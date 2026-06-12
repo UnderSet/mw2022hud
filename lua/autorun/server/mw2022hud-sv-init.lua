@@ -8,4 +8,8 @@ AddCSLuaFile("mw2022hud/vitals.lua")
 AddCSLuaFile("mw2022hud/damageindicator.lua")
 AddCSLuaFile("mw2022hud/drawsystem.lua")
 
+if file.Exists("lua/mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() .. ".lua", "GAME") then
+    AddCSLuaFile("mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() .. ".lua")
+end
+
 include("mw2022hud/server/damageindicator.lua")
