@@ -132,8 +132,11 @@ MW2022HUD.Ammo.Draw = function()
     -- surface.DrawOutlinedRect(MW2022HUD.RightMargin - 510 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 180 * MW2022HUD.Scale, 300 * MW2022HUD.Scale, 150 * MW2022HUD.Scale)
 
     draw.SimpleTextOutlined(MW2022HUD.Weapon:GetPrintName(), "MW2022AmmoSmall", MW2022HUD.RightMargin - 400 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 181 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-    draw.SimpleTextOutlined(MW2022HUD.Weapon.ArcCW and (MW2022HUD.Weapon:GetBuff_Override("Override_Trivia_Calibre") or MW2022HUD.Weapon.Trivia_Calibre) or language.GetPhrase(game.GetAmmoName(MW2022HUD.WeaponData.AmmoType) or "Melee/Tool"), "MW2022AmmoType", MW2022HUD.RightMargin - 402 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 161 * MW2022HUD.Scale, ReserveGray,
-        TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    draw.SimpleTextOutlined(MW2022HUD.Weapon.ArcCW and (MW2022HUD.Weapon:GetBuff_Override("Override_Trivia_Calibre") or MW2022HUD.Weapon.Trivia_Calibre)
+        or MW2022HUD.Weapon.ARC9 and MW2022HUD.Weapon.Trivia.Caliber3
+        or language.GetPhrase(game.GetAmmoName(MW2022HUD.WeaponData.AmmoType)
+        or "Melee/Tool"),
+        "MW2022AmmoType", MW2022HUD.RightMargin - 402 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 161 * MW2022HUD.Scale, ReserveGray, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
 
     if MW2022HUD.WeaponData.AmmoType == -1 then return end
 
