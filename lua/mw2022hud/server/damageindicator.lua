@@ -1,7 +1,5 @@
 util.AddNetworkString("MW2022PlayerDamageTaken")
 
--- print("ALO VEO MA DI ALO")
-
 hook.Add("PostEntityTakeDamage", "MW2022PlayerDamageTaken", function(ent, dmginfo, taken)
     if ent:IsPlayer() then
         local frompos = IsValid(dmginfo:GetInflictor()) and dmginfo:GetInflictor():GetPos() or vector_origin
