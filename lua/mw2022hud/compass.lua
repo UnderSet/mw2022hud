@@ -8,6 +8,8 @@ local CompassAnglesText = {"N",15,30,"NE",60,75,"E",105,120,"SE",150,165,"S",195
 local CompassAngleColor = color_white:Copy()
 
 MW2022HUD.Compass.Draw = function()
+    if !MW2022HUD.EnableCompass:GetBool() then return end
+
     local dir = -math.Remap(EyeAngles().y, -180, 180, -360, 0)
     local cardinal = ""
 
