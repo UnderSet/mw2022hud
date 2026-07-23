@@ -13,7 +13,7 @@ MW2022HUD.Score.SetScores = function()
     local displayPlayers = {}
 
 	for _, p in ipairs(allply) do
-		if not IsValid(p) then continue end
+		if !IsValid(p) or p == LocalPlayer() then continue end
 
 		if iseventmode then
 			local sk = p:GetNW2String("EPlayerStatus", "Member")
