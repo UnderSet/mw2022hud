@@ -1,5 +1,7 @@
 MW2022HUD.Ammo = {}
 MW2022HUD.Weapon = nil
+MW2022HUD.LastWeapon = nil
+MW2022HUD.LastUBState = false
 MW2022HUD.WeaponData = {}
 
 local OutlineBlack = Color(66,66,66,55)
@@ -7,6 +9,14 @@ local BackgroundBlack = Color(29,29,29,207)
 local ReserveGray = Color(166,177,179)
 local LowRed = Color(201,73,0)
 local LowYellow = Color(237,201,16)
+
+local WeaponNameColor = Color(255,255,255)
+local WeaponNameOutline = Color(66,66,66,55)
+local AmmoTypeNameColor = Color(166,177,179)
+local AmmoTypeNameOutline = Color(66,66,66,55)
+
+local WeaponNameTime = CurTime() + 1.5
+local AmmoTypeName = CurTime() + 1.5
 
 MW2022HUD.Materials.FireGroups = {{Material("iw9ui/ui_firetype_semiauto.png")}, {Material("iw9ui/ui_firetype_hyperburst.png")}, {Material("iw9ui/ui_firetype_burst.png")}, {Material("iw9ui/ui_firetype_fullauto.png")}, {Material("mw2022/ui_firetype_safe.png")}}
 
@@ -46,6 +56,11 @@ MW2022HUD.Ammo.SetupWeaponData = function()
 
     MW2022HUD.WeaponData.AmmoType = MW2022HUD.Weapon:GetPrimaryAmmoType()
     MW2022HUD.WeaponData.AmmoTypeAlt = MW2022HUD.Weapon:GetSecondaryAmmoType()
+
+    MW2022HUD.WeaponData.AmmoTypeName = MW2022HUD.Weapon.ArcCW and (MW2022HUD.Weapon:GetBuff_Override("Override_Trivia_Calibre") or MW2022HUD.Weapon.Trivia_Calibre)
+        or MW2022HUD.Weapon.ARC9 and MW2022HUD.Weapon.Trivia.Caliber3 -- note: not all ARC9 packs use Caliber3 so uh...
+        or language.GetPhrase(game.GetAmmoName(MW2022HUD.WeaponData.AmmoType) or "Melee/Tool")
+    MW2022HUD.WeaponData.AmmoTypeAltName = language.GetPhrase(game.GetAmmoName(MW2022HUD.WeaponData.AmmoTypeAlt) or "Melee/Tool")
 
     MW2022HUD.WeaponData.Reserve = ply:GetAmmoCount(MW2022HUD.WeaponData.AmmoType)
     MW2022HUD.WeaponData.ReserveAlt = ply:GetAmmoCount(MW2022HUD.WeaponData.AmmoTypeAlt)
@@ -128,15 +143,27 @@ MW2022HUD.Ammo.Draw = function()
 
     if !IsValid(MW2022HUD.Weapon) then return end
 
+    if !IsValid(MW2022HUD.LastWeapon) or MW2022HUD.LastWeapon != MW2022HUD.Weapon then
+        WeaponNameTime = CurTime() + 1.5
+        AmmoTypeTime = CurTime() + 1.5
+        MW2022HUD.LastWeapon = MW2022HUD.Weapon
+        MW2022HUD.LastUBState = MW2022HUD.WeaponData.UBGL
+    end
+    if MW2022HUD.LastUBState != MW2022HUD.WeaponData.UBGL then
+        AmmoTypeTime = CurTime() + 1.5
+        MW2022HUD.LastUBState = MW2022HUD.WeaponData.UBGL
+    end
+
+    WeaponNameColor.a = 255 * math.Clamp((WeaponNameTime - CurTime()) * 4, 0, 1)
+    WeaponNameOutline.a = 55 * math.Clamp((WeaponNameTime - CurTime()) * 4, 0, 1)
+    AmmoTypeNameColor.a = 255 * math.Clamp((AmmoTypeTime - CurTime()) * 4, 0, 1)
+    AmmoTypeNameOutline.a = 55 * math.Clamp((AmmoTypeTime - CurTime()) * 4, 0, 1)
+
     MW2022HUD.DrawWeaponIcon(MW2022HUD.Weapon, MW2022HUD.RightMargin - 500 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 173 * MW2022HUD.Scale, 280 * MW2022HUD.Scale, 140 * MW2022HUD.Scale)
     -- surface.DrawOutlinedRect(MW2022HUD.RightMargin - 510 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 180 * MW2022HUD.Scale, 300 * MW2022HUD.Scale, 150 * MW2022HUD.Scale)
 
-    draw.SimpleTextOutlined(MW2022HUD.Weapon:GetPrintName(), "MW2022AmmoSmall", MW2022HUD.RightMargin - 400 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 181 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-    draw.SimpleTextOutlined(MW2022HUD.Weapon.ArcCW and (MW2022HUD.Weapon:GetBuff_Override("Override_Trivia_Calibre") or MW2022HUD.Weapon.Trivia_Calibre)
-        or MW2022HUD.Weapon.ARC9 and MW2022HUD.Weapon.Trivia.Caliber3
-        or language.GetPhrase(game.GetAmmoName(MW2022HUD.WeaponData.AmmoType)
-        or "Melee/Tool"),
-        "MW2022AmmoType", MW2022HUD.RightMargin - 402 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 161 * MW2022HUD.Scale, ReserveGray, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    draw.SimpleTextOutlined(MW2022HUD.Weapon:GetPrintName(), "MW2022AmmoSmall", MW2022HUD.RightMargin - 400 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 181 * MW2022HUD.Scale, WeaponNameColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, WeaponNameOutline)
+    draw.SimpleTextOutlined(MW2022HUD.WeaponData.UBGL and MW2022HUD.WeaponData.AmmoTypeAltName or MW2022HUD.WeaponData.AmmoTypeName, "MW2022AmmoType", MW2022HUD.RightMargin - 402 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 161 * MW2022HUD.Scale, AmmoTypeNameColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, AmmoTypeNameOutline)
 
     if MW2022HUD.WeaponData.AmmoType == -1 then return end
 
