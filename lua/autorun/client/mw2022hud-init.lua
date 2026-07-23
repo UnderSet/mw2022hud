@@ -1,6 +1,7 @@
 MW2022HUD = MW2022HUD or {}
 
 MW2022HUD.Enable = CreateClientConVar("MW2022HUD_Enable", 1, true, true, "Enable the MW2022 HUD.", 0, 1)
+MW2022HUD.EnableHealth = CreateClientConVar("MW2022HUD_EnableHealth", 1, true, true, "Enable the HUD's health display.\n1: Display health, armor and player name\n2: Display only armor", 0, 2)
 MW2022HUD.XBounds = CreateClientConVar("MW2022HUD_XBounds", 100, true, true, "Set horizontal bounds.", 0, 100)
 MW2022HUD.YBounds = CreateClientConVar("MW2022HUD_YBounds", 100, true, true, "Set vertical bounds.", 0, 100)
 
