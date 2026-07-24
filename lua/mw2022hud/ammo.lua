@@ -2,6 +2,7 @@ MW2022HUD.Ammo = {}
 MW2022HUD.Weapon = nil
 MW2022HUD.LastWeapon = nil
 MW2022HUD.LastUBState = false
+MW2022HUD.LastFiremode = "AUTO"
 MW2022HUD.WeaponData = {}
 
 local OutlineBlack = Color(66,66,66,55)
@@ -14,9 +15,12 @@ local WeaponNameColor = Color(255,255,255)
 local WeaponNameOutline = Color(66,66,66,55)
 local AmmoTypeNameColor = Color(166,177,179)
 local AmmoTypeNameOutline = Color(66,66,66,55)
+local FiremodeNoticeColor = Color(255,255,255)
+local FiremodeNoticeOutline = Color(66,66,66,55)
 
 local WeaponNameTime = CurTime() + 1.5
 local AmmoTypeName = CurTime() + 1.5
+local FiremodeNoticeTime = CurTime() + 1.5
 
 MW2022HUD.Materials.FireGroups = {{Material("iw9ui/ui_firetype_semiauto.png")}, {Material("iw9ui/ui_firetype_hyperburst.png")}, {Material("iw9ui/ui_firetype_burst.png")}, {Material("iw9ui/ui_firetype_fullauto.png")}, {Material("mw2022/ui_firetype_safe.png")}}
 
@@ -78,7 +82,7 @@ MW2022HUD.Ammo.SetupWeaponData = function()
 end
 
 MW2022HUD.GetFiremode = function(wep)
-    local firemode, firetype, safety, ubgl = "", 1, false, false
+    local firemode, firetype, safety, ubgl = "???", 1, false, false
 
     if wep.ARC9 then
         firemode = wep:GetFiremodeName()
@@ -146,6 +150,7 @@ MW2022HUD.Ammo.Draw = function()
     if !IsValid(MW2022HUD.LastWeapon) or MW2022HUD.LastWeapon != MW2022HUD.Weapon then
         WeaponNameTime = CurTime() + 1.5
         AmmoTypeTime = CurTime() + 1.5
+        FiremodeNoticeTime = CurTime() + 1.5
         MW2022HUD.LastWeapon = MW2022HUD.Weapon
         MW2022HUD.LastUBState = MW2022HUD.WeaponData.UBGL
     end
@@ -153,11 +158,17 @@ MW2022HUD.Ammo.Draw = function()
         AmmoTypeTime = CurTime() + 1.5
         MW2022HUD.LastUBState = MW2022HUD.WeaponData.UBGL
     end
+    if MW2022HUD.LastFiremode != MW2022HUD.WeaponData.FireMode then
+        FiremodeNoticeTime = CurTime() + 1.5
+        MW2022HUD.LastFiremode = MW2022HUD.WeaponData.FireMode
+    end
 
     WeaponNameColor.a = 255 * math.Clamp((WeaponNameTime - CurTime()) * 4, 0, 1)
     WeaponNameOutline.a = 55 * math.Clamp((WeaponNameTime - CurTime()) * 4, 0, 1)
     AmmoTypeNameColor.a = 255 * math.Clamp((AmmoTypeTime - CurTime()) * 4, 0, 1)
     AmmoTypeNameOutline.a = 55 * math.Clamp((AmmoTypeTime - CurTime()) * 4, 0, 1)
+    FiremodeNoticeColor.a = 255 * math.Clamp((FiremodeNoticeTime - CurTime()) * 4, 0, 1)
+    FiremodeNoticeOutline.a = 55 * math.Clamp((FiremodeNoticeTime - CurTime()) * 4, 0, 1)
 
     MW2022HUD.DrawWeaponIcon(MW2022HUD.Weapon, MW2022HUD.RightMargin - 500 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 173 * MW2022HUD.Scale, 280 * MW2022HUD.Scale, 140 * MW2022HUD.Scale)
     -- surface.DrawOutlinedRect(MW2022HUD.RightMargin - 510 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 180 * MW2022HUD.Scale, 300 * MW2022HUD.Scale, 150 * MW2022HUD.Scale)
@@ -211,7 +222,11 @@ MW2022HUD.Ammo.Draw = function()
         draw.SimpleTextOutlined("RELOAD", "MW2022AmmoNotice", MW2022HUD.ScreenWidth / 2 - offsetw / 2 + 29 * MW2022HUD.Scale, MW2022HUD.ScreenHeight / 2 + 88 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
     end
 
-    -- draw.SimpleTextOutlined("Fire Type: Full-Auto", "MW2022AmmoSmall", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 100 * MW2022HUD.Scale, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 2, ReserveGray)
+    if MW2022HUD.WeaponData.UBGL then
+        draw.SimpleTextOutlined("Altfire: " .. MW2022HUD.WeaponData.FireMode, "MW2022FiremodeNotice", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 95 * MW2022HUD.Scale, FiremodeNoticeColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 2, FiremodeNoticeOutline)
+    else
+        draw.SimpleTextOutlined("Fire Type: " .. MW2022HUD.WeaponData.FireMode, "MW2022FiremodeNotice", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 95 * MW2022HUD.Scale, FiremodeNoticeColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 2, FiremodeNoticeOutline)
+    end
     
     surface.SetDrawColor(color_white)
     surface.SetMaterial(MW2022HUD.Materials.FireGroups[MW2022HUD.WeaponData.FireType][1])
