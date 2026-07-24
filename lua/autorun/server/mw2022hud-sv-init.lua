@@ -13,3 +13,6 @@ if file.Exists("lua/mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() 
 end
 
 include("mw2022hud/server/damageindicator.lua")
+
+resource.AddSingleFile("resource/fonts/NotoSans-Bold.ttf")
+resource.AddSingleFile("resource/fonts/NotoSans-Regular.ttf")
