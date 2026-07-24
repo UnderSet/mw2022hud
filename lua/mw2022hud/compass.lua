@@ -10,7 +10,8 @@ local CompassAngleColor = color_white:Copy()
 MW2022HUD.Compass.Draw = function()
     if !MW2022HUD.EnableCompass:GetBool() then return end
 
-    local dir = -math.Remap(EyeAngles().y, -180, 180, -360, 0)
+    local dir = ply:ShouldDrawLocalPlayer() and ply:EyeAngles().y or EyeAngles().y
+    dir = -math.Remap(dir, -180, 180, -360, 0)
     local cardinal = ""
 
     if (math.abs(math.AngleDifference(dir, 0))) < 67.5 then cardinal = cardinal .. "N"
