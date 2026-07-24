@@ -49,7 +49,7 @@ MW2022HUD.WeaponIconColorCorrect = {
 MW2022HUD.WeaponIconOffsets = file.Exists("mw2022weaponiconoffsets.txt", "DATA") and util.JSONToTable(util.Decompress(file.Read("mw2022weaponiconoffsets.txt", "DATA"))) or {}
 
 MW2022HUD.Ammo.SetupWeaponData = function()
-    ply = LocalPlayer()
+    local ply = LocalPlayer()
     MW2022HUD.Weapon = ply:GetActiveWeapon()
     if !IsValid(MW2022HUD.Weapon) then return end
 

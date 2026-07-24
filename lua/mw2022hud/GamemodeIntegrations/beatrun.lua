@@ -7,7 +7,7 @@ MW2022HUD.Score.SetScores = function()
 
     local enemyscore = 0
 
-    ply = LocalPlayer()
+    local ply = LocalPlayer()
 
     local allply = allply or player.GetAll()
     local displayPlayers = {}
