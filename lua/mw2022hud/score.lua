@@ -6,6 +6,15 @@ MW2022HUD.Score.Enabled = false -- set to true to show, set back to false to hid
 MW2022HUD.Score.GamemodeName = gmod.GetGamemode() and gmod.GetGamemode().Name or ""
 MW2022HUD.Score.OverrideGamemodeName = "" -- override shown gamemode name, useful for say, Beatrun; set to "" (like here) to disable
 
+MW2022HUD.Score.GamemodeIconRT = GetRenderTarget("MW5GamemodeIcon", 256, 256)
+MW2022HUD.Score.GamemodeIconRTMat = CreateMaterial( 
+    "MW5GamemodeIconMat","UnlitGeneric",
+    {
+        ["$basetexture"] = MW2022HUD.Score.GamemodeIconRT:GetName(),
+        ["$translucent"] = "1"
+    } 
+)
+
 MW2022HUD.ScoreData.MaxScore = 65
 MW2022HUD.ScoreData.AllyScore = 17
 MW2022HUD.ScoreData.EnemyScore = 18
@@ -25,6 +34,19 @@ MW2022HUD.Materials.ScoreTick = Material("iw9ui/hud_score_bar_tick.png")
 MW2022HUD.Materials.ScoreTickInverse = Material("iw9ui/hud_score_bar_tick_reverse.png")
 
 MW2022HUD.Materials.GamemodeSplash = Material("mw2022/hud_splash_gamemode_diamond.png")
+MW2022HUD.Materials.GamemodeSplash2 = Material("iw9ui/hud_splash_gamemode_diamond.png")
+
+MW2022HUD.GamemodeIconColorCorrect = {
+    [ "$pp_colour_addr" ] = 0,
+	[ "$pp_colour_addg" ] = 0,
+	[ "$pp_colour_addb" ] = 0,
+	[ "$pp_colour_brightness" ] = 0.7,
+	[ "$pp_colour_contrast" ] = 1,
+	[ "$pp_colour_colour" ] = 0,
+	[ "$pp_colour_mulr" ] = 0,
+	[ "$pp_colour_mulg" ] = 0,
+	[ "$pp_colour_mulb" ] = 0
+}
 
 local OutlineBlack = Color(66,66,66,55)
 local GamemodeGray = Color(185,185,185,183)
@@ -40,6 +62,9 @@ local EnemyColorGradient = Color(248,39,0)
 local WinningColor = Color(24, 210, 240)
 local LosingColor = Color(255, 34, 0)
 
+local GamemodeIcon = Material("gamemodes/" .. engine.ActiveGamemode() .. "/icon24.png")
+local GradientRight = Material("vgui/gradient-r")
+
 -- Integration-defined function (see mw2022hud/GamemodeIntegrations/beatrun.lua)
 MW2022HUD.Score.SetScores = function() end
 
@@ -50,13 +75,53 @@ MW2022HUD.Score.Draw = function()
     -- MW2022HUD.ScoreData.EnemyScore = MW2022HUD.ScoreData.MaxScore - math.Round(CurTime() * 4 % MW2022HUD.ScoreData.MaxScore)
     -- MW2022HUD.ScoreData.EndTime = CurTime() + 404
 
+    render.PushRenderTarget(MW2022HUD.Score.GamemodeIconRT)
+    cam.Start2D()
+    render.Clear(0, 0, 0, 0, true, true)
+
+    render.SetStencilEnable( true )
+    render.ClearStencil()
+    render.SetStencilTestMask( 255 )
+    render.SetStencilWriteMask( 255 )
+    render.SetStencilPassOperation(STENCILOPERATION_KEEP)
+    render.SetStencilZFailOperation(STENCILOPERATION_KEEP)
+    render.SetStencilCompareFunction(STENCILCOMPARISONFUNCTION_NEVER)
+    render.SetStencilReferenceValue( 9 )
+    render.SetStencilFailOperation(STENCILOPERATION_REPLACE)
+
+    surface.DrawRect(64, 0, 192, 256)
+
+    render.SetStencilFailOperation(STENCILOPERATION_KEEP)
+    render.SetStencilCompareFunction(STENCILCOMPARISONFUNCTION_EQUAL)
+
+    surface.SetDrawColor(255,255,255,255)
+    surface.SetMaterial(GamemodeIcon)
+    surface.DrawTexturedRect(64, 64, 128, 128)
+    surface.SetMaterial(MW2022HUD.Materials.GamemodeSplash2)
+    surface.DrawTexturedRect(0, 0, 256, 256)
+
+    render.SetWriteDepthToDestAlpha(false)
+	render.OverrideBlend(true, BLEND_SRC_COLOR, BLEND_SRC_ALPHA, BLENDFUNC_MIN)
+        surface.SetDrawColor(255,255,255,80)
+		surface.SetMaterial(GradientRight)
+		surface.DrawTexturedRect(64, 0, 192, 256)
+	render.OverrideBlend(false)
+    render.SetWriteDepthToDestAlpha(true)
+
+    DrawColorModify(MW2022HUD.GamemodeIconColorCorrect)
+
+    render.SetStencilEnable(false)
+
+    cam.End2D()
+    render.PopRenderTarget()
+
+    surface.SetMaterial(MW2022HUD.Score.GamemodeIconRTMat)
+    surface.SetDrawColor(255,255,255,128)
+    surface.DrawTexturedRect(MW2022HUD.LeftMargin - 65 * MW2022HUD.Scale, MW2022HUD.TopMargin + 255 * MW2022HUD.Scale, 135 * MW2022HUD.Scale, 135 * MW2022HUD.Scale)
+
     draw.SimpleText(string.upper("// " .. (MW2022HUD.Score.OverrideGamemodeName != "" and MW2022HUD.Score.OverrideGamemodeName or MW2022HUD.Score.GamemodeName)),
         "MW2022GamemodeName", MW2022HUD.LeftMargin + 25 * MW2022HUD.Scale, MW2022HUD.TopMargin + 246 * MW2022HUD.Scale, GamemodeGray, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
     
-    surface.SetMaterial(MW2022HUD.Materials.GamemodeSplash)
-    surface.SetDrawColor(GamemodeGray)
-    surface.DrawTexturedRect(MW2022HUD.LeftMargin - 65 * MW2022HUD.Scale, MW2022HUD.TopMargin + 255 * MW2022HUD.Scale, 135 * MW2022HUD.Scale, 135 * MW2022HUD.Scale)
-
     if !MW2022HUD.Score.Enabled then return end
 
     -- THESE ARE NOT WHAT YOU THINK THEY ARE.
