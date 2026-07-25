@@ -7,6 +7,7 @@ AddCSLuaFile("mw2022hud/score.lua")
 AddCSLuaFile("mw2022hud/vitals.lua")
 AddCSLuaFile("mw2022hud/damageindicator.lua")
 AddCSLuaFile("mw2022hud/killfeed.lua")
+AddCSLuaFile("mw2022hud/minimap.lua")
 AddCSLuaFile("mw2022hud/drawsystem.lua")
 
 if file.Exists("lua/mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() .. ".lua", "GAME") then
