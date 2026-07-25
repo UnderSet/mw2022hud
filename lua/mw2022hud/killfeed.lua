@@ -74,8 +74,6 @@ hook.Add("AddDeathNotice", "MW2022AddDeathNotice", function(attacker, atkTeam, i
         ["VictimTeamColor"] = (victimTeam == -1 and EnemyColor or victimTeam == -2 and AllyColor or team.GetColor(victimTeam))
     }
     table.insert(MW2022HUD.Killfeed.Kills, 1, killdata)
-
-    PrintTable(killdata)
 end)
 
 -- hook.Add( "DrawDeathNotice", "holohud2_deathnotice", function()
