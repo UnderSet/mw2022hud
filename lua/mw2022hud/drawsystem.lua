@@ -21,7 +21,9 @@ hook.Add("HUDPaint", "MW2022HUDRun", function()
         MW2022HUD.Ammo.Draw()
     
         MW2022HUD.Vitals.Draw()
-    end    
+
+        MW2022HUD.Minimap.Draw()
+    end
 
     MW2022HUD.Score.SetScores()
     MW2022HUD.Score.Draw()
