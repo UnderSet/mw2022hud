@@ -13,7 +13,7 @@ MW2022HUD.Killfeed.Draw = function()
     local localnick = LocalPlayer():Nick()
 
     for i=1,#MW2022HUD.Killfeed.Kills do
-        if MW2022HUD.Killfeed.Kills[i].Inflictor != "suicide" then
+        if MW2022HUD.Killfeed.Kills[i].Attacker then
             surface.SetFont("MW2022KillfeedPlayerName")
             local attackerw = select(1, surface.GetTextSize(MW2022HUD.Killfeed.Kills[i].Attacker))
             local inflictorhasicon = killicon.Exists(MW2022HUD.Killfeed.Kills[i].Inflictor)
@@ -44,7 +44,7 @@ MW2022HUD.Killfeed.Draw = function()
 
             surface.SetTextPos(MW2022HUD.LeftMargin + 25 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - (539 - i * 29) * MW2022HUD.Scale)
             surface.SetTextColor(color_white)
-            surface.DrawText("[Suicide]")
+            surface.DrawText(MW2022HUD.Killfeed.Kills[i].Inflictor == "worldspawn" and "[Falling]" or "[Suicide]")
             surface.SetTextPos(MW2022HUD.LeftMargin + 40 * MW2022HUD.Scale + inflictorw, MW2022HUD.BottomMargin - vertshift - (539 - i * 29) * MW2022HUD.Scale)
             surface.SetTextColor(MW2022HUD.Killfeed.Kills[i].Victim != localnick and MW2022HUD.Killfeed.Kills[i].VictimTeamColor or SelfColor)
             surface.DrawText(MW2022HUD.Killfeed.Kills[i].Victim)
@@ -74,6 +74,8 @@ hook.Add("AddDeathNotice", "MW2022AddDeathNotice", function(attacker, atkTeam, i
         ["VictimTeamColor"] = (victimTeam == -1 and EnemyColor or victimTeam == -2 and AllyColor or team.GetColor(victimTeam))
     }
     table.insert(MW2022HUD.Killfeed.Kills, 1, killdata)
+
+    PrintTable(killdata)
 end)
 
 -- hook.Add( "DrawDeathNotice", "holohud2_deathnotice", function()
