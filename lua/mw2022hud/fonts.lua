@@ -68,6 +68,11 @@ surface.CreateFont("MW2022ScorePlayerName", {
     size = 25 * MW2022HUD.Scale,
     weight = 10,
 })
+surface.CreateFont("MW2022KillfeedPlayerName", {
+    font = "Noto Sans",
+    size = 28 * MW2022HUD.Scale,
+    weight = 10,
+})
 surface.CreateFont("MW2022Keybinds", {
     font = "Noto Sans Bold",
     size = 24 * MW2022HUD.Scale,

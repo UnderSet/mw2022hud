@@ -38,6 +38,7 @@ include("mw2022hud/ammo.lua")
 include("mw2022hud/score.lua")
 include("mw2022hud/vitals.lua")
 include("mw2022hud/damageindicator.lua")
+include("mw2022hud/killfeed.lua")
 include("mw2022hud/drawsystem.lua")
 
 

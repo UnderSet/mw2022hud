@@ -7,24 +7,26 @@ MW2022HUD.HideElements = {
 }
 
 hook.Add("HUDPaint", "MW2022HUDRun", function()
-    -- MW2022's HUD just doesn't render if you're dead lmao
-    if !MW2022HUD.Enable:GetBool() or !LocalPlayer():Alive() then
+    if !MW2022HUD.Enable:GetBool() then return end
+
+    if !LocalPlayer():Alive() then
         -- reset damage directions
         MW2022HUD.DamageIndicator.DamageAng = {}
-        return
-    end
-
-    MW2022HUD.DamageIndicator.Draw()
-
-    MW2022HUD.Compass.Draw()
-
-    MW2022HUD.Ammo.SetupWeaponData()
-    MW2022HUD.Ammo.Draw()
-
-    MW2022HUD.Vitals.Draw()
+    else
+        MW2022HUD.DamageIndicator.Draw()
+    
+        MW2022HUD.Compass.Draw()
+    
+        MW2022HUD.Ammo.SetupWeaponData()
+        MW2022HUD.Ammo.Draw()
+    
+        MW2022HUD.Vitals.Draw()
+    end    
 
     MW2022HUD.Score.SetScores()
     MW2022HUD.Score.Draw()
+
+    MW2022HUD.Killfeed.Draw()
 end)
 
 hook.Add("HUDShouldDraw", "MW2022HUDHideDefault", function(name)
