@@ -2,6 +2,7 @@ MW2022HUD.Score = {}
 MW2022HUD.ScoreData = {}
 
 MW2022HUD.Score.Enabled = false -- set to true to show, set back to false to hide (duh)
+MW2022HUD.Score.UseCustomDraw = false -- some gamemodes have special integrations that don't use the regular scorebars
 
 MW2022HUD.Score.GamemodeName = gmod.GetGamemode() and gmod.GetGamemode().Name or ""
 MW2022HUD.Score.OverrideGamemodeName = "" -- override shown gamemode name, useful for say, Beatrun; set to "" (like here) to disable
@@ -124,129 +125,134 @@ MW2022HUD.Score.Draw = function()
     
     if !MW2022HUD.Score.Enabled then return end
 
-    -- THESE ARE NOT WHAT YOU THINK THEY ARE.
-    local AllyScoreRatio = 1 - MW2022HUD.ScoreData.AllyScore / MW2022HUD.ScoreData.MaxScore
-    local EnemyScoreRatio = 1 - MW2022HUD.ScoreData.EnemyScore / MW2022HUD.ScoreData.MaxScore
-    local ScoreBalance = MW2022HUD.ScoreData.AllyScore > MW2022HUD.ScoreData.EnemyScore and 1
-        or MW2022HUD.ScoreData.AllyScore == MW2022HUD.ScoreData.EnemyScore and 0
-        or -1
-    local FormattedTime = string.FormattedTime(MW2022HUD.ScoreData.RemainingTime, "%01i:%02i")
-
-    draw.SimpleTextOutlined(MW2022HUD.ScoreData.AllyScore, ScoreBalance == 1 and "MW2022ScoreWinning" or "MW2022ScoreLosing",
-        MW2022HUD.LeftMargin + 56 * MW2022HUD.Scale, MW2022HUD.TopMargin + 259 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-    draw.SimpleTextOutlined(MW2022HUD.ScoreData.EnemyScore, ScoreBalance == -1 and "MW2022ScoreWinning" or "MW2022ScoreLosing",
-        MW2022HUD.LeftMargin + 56 * MW2022HUD.Scale, MW2022HUD.TopMargin + 331 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-
-    if MW2022HUD.ScoreData.FFAMode then
-        print(MW2022HUD.ScoreData.FFALocalPos)
-        draw.SimpleTextOutlined(string.CardinalToOrdinal(MW2022HUD.ScoreData.FFALocalPos), "MW2022GamemodeTime",
-            MW2022HUD.LeftMargin + 250 * MW2022HUD.Scale, MW2022HUD.TopMargin + 283 * MW2022HUD.Scale, WinningColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-        draw.SimpleTextOutlined(MW2022HUD.ScoreData.FFALocalPos != 1 and "1st" or "2nd", "MW2022GamemodeTime",
-            MW2022HUD.LeftMargin + 250 * MW2022HUD.Scale, MW2022HUD.TopMargin + 343 * MW2022HUD.Scale, LosingColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-        draw.SimpleTextOutlined(MW2022HUD.ScoreData.FFAEnemyLeadName, "MW2022ScorePlayerName",
-            MW2022HUD.LeftMargin + 55 * MW2022HUD.Scale, MW2022HUD.TopMargin + 373 * MW2022HUD.Scale, LosingColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-
-        print(string.CardinalToOrdinal(MW2022HUD.ScoreData.FFALocalPos))
-        print(MW2022HUD.ScoreData.FFALocalPos != 1 and "1st" or "2nd")
-        if MW2022HUD.ScoreData.RemainingTime >= 0 then 
-            draw.SimpleTextOutlined(FormattedTime, "MW2022GamemodeTime", MW2022HUD.LeftMargin + 250 * MW2022HUD.Scale, MW2022HUD.TopMargin + 396 * MW2022HUD.Scale,
-                color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-        end
-        -- don't even fucking *think* of touching this stencil mess, we clear?
-        render.SetStencilEnable(true)
-        render.ClearStencil()
-        render.SetStencilTestMask(255)
-        render.SetStencilWriteMask(255)
-        render.SetStencilPassOperation(STENCILOPERATION_KEEP)
-        render.SetStencilZFailOperation(STENCILOPERATION_KEEP)
-        render.SetStencilCompareFunction(STENCILCOMPARISONFUNCTION_NEVER)
-
-        render.SetStencilFailOperation(STENCILOPERATION_REPLACE)
-        render.SetStencilReferenceValue(69)
-
-        draw.NoTexture()
-        surface.SetDrawColor(color_black)
-        surface.DrawTexturedRectRotated(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale, MW2022HUD.TopMargin + 325 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 45)
-        surface.DrawTexturedRectRotated(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale, MW2022HUD.TopMargin + 321 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 45)
-        surface.DrawRect(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale, MW2022HUD.TopMargin + 321 * MW2022HUD.Scale, 192 * MW2022HUD.Scale, 4 * MW2022HUD.Scale)
-
-        render.SetStencilFailOperation(STENCILOPERATION_KEEP)
-        render.SetStencilCompareFunction(STENCILCOMPARISONFUNCTION_GREATER)
-        render.SetStencilReferenceValue(8)
-
-        surface.SetMaterial(MW2022HUD.Materials.Score)
-        surface.SetDrawColor(WinningColor)
-        surface.DrawTexturedRect(MW2022HUD.LeftMargin + 64 * MW2022HUD.Scale, MW2022HUD.TopMargin + 316 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
-        surface.SetMaterial(MW2022HUD.Materials.ScoreInverse)
-        surface.SetDrawColor(LosingColor)
-        surface.DrawTexturedRect(MW2022HUD.LeftMargin + 64 * MW2022HUD.Scale, MW2022HUD.TopMargin + 320 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
-
-        render.SetStencilEnable(false)
-        render.SetScissorRect(0,0,0,0,false)
+    if MW2022HUD.Score.UseCustomDraw then
+        MW2022HUD.Score.CustomDraw()
+        print("hi there")
     else
-        draw.SimpleTextOutlined(ScoreBalance == 1 and "WINNING" or ScoreBalance == 0 and "TIED" or "LOSING", "MW2022ScoreState",
-            MW2022HUD.LeftMargin + 240 * MW2022HUD.Scale, MW2022HUD.TopMargin + 288 * MW2022HUD.Scale,
-            ScoreBalance == 1 and WinningColor or ScoreBalance == 0 and color_white or LosingColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+        -- THESE ARE NOT WHAT YOU THINK THEY ARE.
+        local AllyScoreRatio = 1 - MW2022HUD.ScoreData.AllyScore / MW2022HUD.ScoreData.MaxScore
+        local EnemyScoreRatio = 1 - MW2022HUD.ScoreData.EnemyScore / MW2022HUD.ScoreData.MaxScore
+        local ScoreBalance = MW2022HUD.ScoreData.AllyScore > MW2022HUD.ScoreData.EnemyScore and 1
+            or MW2022HUD.ScoreData.AllyScore == MW2022HUD.ScoreData.EnemyScore and 0
+            or -1
+        local FormattedTime = string.FormattedTime(MW2022HUD.ScoreData.RemainingTime, "%01i:%02i")
 
-        if MW2022HUD.ScoreData.RemainingTime >= 0 then 
-            draw.SimpleTextOutlined(FormattedTime, "MW2022GamemodeTime", MW2022HUD.LeftMargin + 240 * MW2022HUD.Scale, MW2022HUD.TopMargin + 338 * MW2022HUD.Scale,
-                color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+        draw.SimpleTextOutlined(MW2022HUD.ScoreData.AllyScore, ScoreBalance == 1 and "MW2022ScoreWinning" or "MW2022ScoreLosing",
+            MW2022HUD.LeftMargin + 56 * MW2022HUD.Scale, MW2022HUD.TopMargin + 259 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+        draw.SimpleTextOutlined(MW2022HUD.ScoreData.EnemyScore, ScoreBalance == -1 and "MW2022ScoreWinning" or "MW2022ScoreLosing",
+            MW2022HUD.LeftMargin + 56 * MW2022HUD.Scale, MW2022HUD.TopMargin + 331 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+
+        if MW2022HUD.ScoreData.FFAMode then
+            print(MW2022HUD.ScoreData.FFALocalPos)
+            draw.SimpleTextOutlined(string.CardinalToOrdinal(MW2022HUD.ScoreData.FFALocalPos), "MW2022GamemodeTime",
+                MW2022HUD.LeftMargin + 250 * MW2022HUD.Scale, MW2022HUD.TopMargin + 283 * MW2022HUD.Scale, WinningColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+            draw.SimpleTextOutlined(MW2022HUD.ScoreData.FFALocalPos != 1 and "1st" or "2nd", "MW2022GamemodeTime",
+                MW2022HUD.LeftMargin + 250 * MW2022HUD.Scale, MW2022HUD.TopMargin + 343 * MW2022HUD.Scale, LosingColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+            draw.SimpleTextOutlined(MW2022HUD.ScoreData.FFAEnemyLeadName, "MW2022ScorePlayerName",
+                MW2022HUD.LeftMargin + 55 * MW2022HUD.Scale, MW2022HUD.TopMargin + 373 * MW2022HUD.Scale, LosingColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+
+            print(string.CardinalToOrdinal(MW2022HUD.ScoreData.FFALocalPos))
+            print(MW2022HUD.ScoreData.FFALocalPos != 1 and "1st" or "2nd")
+            if MW2022HUD.ScoreData.RemainingTime >= 0 then 
+                draw.SimpleTextOutlined(FormattedTime, "MW2022GamemodeTime", MW2022HUD.LeftMargin + 250 * MW2022HUD.Scale, MW2022HUD.TopMargin + 396 * MW2022HUD.Scale,
+                    color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+            end
+            -- don't even fucking *think* of touching this stencil mess, we clear?
+            render.SetStencilEnable(true)
+            render.ClearStencil()
+            render.SetStencilTestMask(255)
+            render.SetStencilWriteMask(255)
+            render.SetStencilPassOperation(STENCILOPERATION_KEEP)
+            render.SetStencilZFailOperation(STENCILOPERATION_KEEP)
+            render.SetStencilCompareFunction(STENCILCOMPARISONFUNCTION_NEVER)
+
+            render.SetStencilFailOperation(STENCILOPERATION_REPLACE)
+            render.SetStencilReferenceValue(69)
+
+            draw.NoTexture()
+            surface.SetDrawColor(color_black)
+            surface.DrawTexturedRectRotated(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale, MW2022HUD.TopMargin + 325 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 45)
+            surface.DrawTexturedRectRotated(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale, MW2022HUD.TopMargin + 321 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 45)
+            surface.DrawRect(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale, MW2022HUD.TopMargin + 321 * MW2022HUD.Scale, 192 * MW2022HUD.Scale, 4 * MW2022HUD.Scale)
+
+            render.SetStencilFailOperation(STENCILOPERATION_KEEP)
+            render.SetStencilCompareFunction(STENCILCOMPARISONFUNCTION_GREATER)
+            render.SetStencilReferenceValue(8)
+
+            surface.SetMaterial(MW2022HUD.Materials.Score)
+            surface.SetDrawColor(WinningColor)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 64 * MW2022HUD.Scale, MW2022HUD.TopMargin + 316 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+            surface.SetMaterial(MW2022HUD.Materials.ScoreInverse)
+            surface.SetDrawColor(LosingColor)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 64 * MW2022HUD.Scale, MW2022HUD.TopMargin + 320 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+
+            render.SetStencilEnable(false)
+            render.SetScissorRect(0,0,0,0,false)
+        else
+            draw.SimpleTextOutlined(ScoreBalance == 1 and "WINNING" or ScoreBalance == 0 and "TIED" or "LOSING", "MW2022ScoreState",
+                MW2022HUD.LeftMargin + 240 * MW2022HUD.Scale, MW2022HUD.TopMargin + 288 * MW2022HUD.Scale,
+                ScoreBalance == 1 and WinningColor or ScoreBalance == 0 and color_white or LosingColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+
+            if MW2022HUD.ScoreData.RemainingTime >= 0 then 
+                draw.SimpleTextOutlined(FormattedTime, "MW2022GamemodeTime", MW2022HUD.LeftMargin + 240 * MW2022HUD.Scale, MW2022HUD.TopMargin + 338 * MW2022HUD.Scale,
+                    color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+            end
+            -- don't even fucking *think* of touching this stencil mess, we clear?
+            render.SetScissorRect(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale, MW2022HUD.TopMargin + 313 * MW2022HUD.Scale,
+                MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale + 190 * MW2022HUD.Scale, MW2022HUD.TopMargin + 335 * MW2022HUD.Scale, true)
+            surface.SetMaterial(MW2022HUD.Materials.Score)
+            surface.SetDrawColor(ScoreBG)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 60 * MW2022HUD.Scale, MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+            surface.SetMaterial(MW2022HUD.Materials.ScoreInverse)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 60 * MW2022HUD.Scale, MW2022HUD.TopMargin + 324 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+
+            render.SetStencilEnable(true)
+            render.ClearStencil()
+            render.SetStencilTestMask(255)
+            render.SetStencilWriteMask(255)
+            render.SetStencilPassOperation(STENCILOPERATION_KEEP)
+            render.SetStencilZFailOperation(STENCILOPERATION_KEEP)
+            render.SetStencilCompareFunction(STENCILCOMPARISONFUNCTION_NEVER)
+
+            render.SetStencilReferenceValue(0)
+            render.SetStencilFailOperation(STENCILOPERATION_REPLACE)
+
+            -- surface.SetDrawColor(color_black)
+            -- surface.DrawRect(0,0,ScrW(),ScrH())
+
+            render.SetStencilReferenceValue(69)
+
+            draw.NoTexture()
+            surface.SetDrawColor(color_black)
+            surface.DrawTexturedRectRotated(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale, MW2022HUD.TopMargin + 325 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 45)
+            surface.DrawTexturedRectRotated(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale, MW2022HUD.TopMargin + 321 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 45)
+            render.SetStencilFailOperation(STENCILOPERATION_KEEP)
+            render.SetStencilCompareFunction(STENCILCOMPARISONFUNCTION_GREATER)
+            render.SetStencilReferenceValue(8)
+
+            surface.SetMaterial(MW2022HUD.Materials.Score)
+            surface.SetDrawColor(AllyColor)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 60 * MW2022HUD.Scale - (AllyScoreRatio * 188), MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+            surface.SetMaterial(ScoreBalance == 1 and MW2022HUD.Materials.ScoreGradient or MW2022HUD.Materials.ScoreGradientLosing)
+            surface.SetDrawColor(AllyColorGradient)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 226 * MW2022HUD.Scale - (AllyScoreRatio * 188), MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 23 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+            surface.SetMaterial(MW2022HUD.Materials.ScoreTick)
+            surface.SetDrawColor(color_white)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 240 * MW2022HUD.Scale - (AllyScoreRatio * 188), MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 10 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+
+            surface.SetMaterial(MW2022HUD.Materials.ScoreInverse)
+            surface.SetDrawColor(EnemyColor)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 60 * MW2022HUD.Scale - (EnemyScoreRatio * 188), MW2022HUD.TopMargin + 324 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+            surface.SetMaterial(ScoreBalance == -1 and MW2022HUD.Materials.ScoreGradientInverse or MW2022HUD.Materials.ScoreGradientLosingInverse)
+            surface.SetDrawColor(EnemyColorGradient)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 226 * MW2022HUD.Scale - (EnemyScoreRatio * 188), MW2022HUD.TopMargin + 324 * MW2022HUD.Scale, 23 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+            surface.SetMaterial(MW2022HUD.Materials.ScoreTickInverse)
+            surface.SetDrawColor(color_white)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 240 * MW2022HUD.Scale - (EnemyScoreRatio * 188), MW2022HUD.TopMargin + 324 * MW2022HUD.Scale, 10 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+
+            render.SetStencilEnable(false)
+            render.SetScissorRect(0,0,0,0,false)
         end
-        -- don't even fucking *think* of touching this stencil mess, we clear?
-        render.SetScissorRect(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale, MW2022HUD.TopMargin + 313 * MW2022HUD.Scale,
-            MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale + 190 * MW2022HUD.Scale, MW2022HUD.TopMargin + 335 * MW2022HUD.Scale, true)
-        surface.SetMaterial(MW2022HUD.Materials.Score)
-        surface.SetDrawColor(ScoreBG)
-        surface.DrawTexturedRect(MW2022HUD.LeftMargin + 60 * MW2022HUD.Scale, MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
-        surface.SetMaterial(MW2022HUD.Materials.ScoreInverse)
-        surface.DrawTexturedRect(MW2022HUD.LeftMargin + 60 * MW2022HUD.Scale, MW2022HUD.TopMargin + 324 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
-
-        render.SetStencilEnable(true)
-        render.ClearStencil()
-        render.SetStencilTestMask(255)
-        render.SetStencilWriteMask(255)
-        render.SetStencilPassOperation(STENCILOPERATION_KEEP)
-        render.SetStencilZFailOperation(STENCILOPERATION_KEEP)
-        render.SetStencilCompareFunction(STENCILCOMPARISONFUNCTION_NEVER)
-
-        render.SetStencilReferenceValue(0)
-        render.SetStencilFailOperation(STENCILOPERATION_REPLACE)
-
-        -- surface.SetDrawColor(color_black)
-        -- surface.DrawRect(0,0,ScrW(),ScrH())
-
-        render.SetStencilReferenceValue(69)
-
-        draw.NoTexture()
-        surface.SetDrawColor(color_black)
-        surface.DrawTexturedRectRotated(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale, MW2022HUD.TopMargin + 325 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 45)
-        surface.DrawTexturedRectRotated(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale, MW2022HUD.TopMargin + 321 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 12 * MW2022HUD.Scale, 45)
-        render.SetStencilFailOperation(STENCILOPERATION_KEEP)
-        render.SetStencilCompareFunction(STENCILCOMPARISONFUNCTION_GREATER)
-        render.SetStencilReferenceValue(8)
-
-        surface.SetMaterial(MW2022HUD.Materials.Score)
-        surface.SetDrawColor(AllyColor)
-        surface.DrawTexturedRect(MW2022HUD.LeftMargin + 60 * MW2022HUD.Scale - (AllyScoreRatio * 188), MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
-        surface.SetMaterial(ScoreBalance == 1 and MW2022HUD.Materials.ScoreGradient or MW2022HUD.Materials.ScoreGradientLosing)
-        surface.SetDrawColor(AllyColorGradient)
-        surface.DrawTexturedRect(MW2022HUD.LeftMargin + 226 * MW2022HUD.Scale - (AllyScoreRatio * 188), MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 23 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
-        surface.SetMaterial(MW2022HUD.Materials.ScoreTick)
-        surface.SetDrawColor(color_white)
-        surface.DrawTexturedRect(MW2022HUD.LeftMargin + 240 * MW2022HUD.Scale - (AllyScoreRatio * 188), MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 10 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
-
-        surface.SetMaterial(MW2022HUD.Materials.ScoreInverse)
-        surface.SetDrawColor(EnemyColor)
-        surface.DrawTexturedRect(MW2022HUD.LeftMargin + 60 * MW2022HUD.Scale - (EnemyScoreRatio * 188), MW2022HUD.TopMargin + 324 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
-        surface.SetMaterial(ScoreBalance == -1 and MW2022HUD.Materials.ScoreGradientInverse or MW2022HUD.Materials.ScoreGradientLosingInverse)
-        surface.SetDrawColor(EnemyColorGradient)
-        surface.DrawTexturedRect(MW2022HUD.LeftMargin + 226 * MW2022HUD.Scale - (EnemyScoreRatio * 188), MW2022HUD.TopMargin + 324 * MW2022HUD.Scale, 23 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
-        surface.SetMaterial(MW2022HUD.Materials.ScoreTickInverse)
-        surface.SetDrawColor(color_white)
-        surface.DrawTexturedRect(MW2022HUD.LeftMargin + 240 * MW2022HUD.Scale - (EnemyScoreRatio * 188), MW2022HUD.TopMargin + 324 * MW2022HUD.Scale, 10 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
-
-        render.SetStencilEnable(false)
-        render.SetScissorRect(0,0,0,0,false)
     end
 end
 
