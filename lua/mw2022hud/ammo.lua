@@ -178,11 +178,16 @@ MW2022HUD.Ammo.Draw = function()
 
     if MW2022HUD.WeaponData.AmmoType == -1 then return end
 
-    -- CoD seems to use some kind of TTK based detection for low ammo threshold or something? Waaaaay out of scope of what I can do though...
-    draw.SimpleTextOutlined(MW2022HUD.WeaponData.CurrentMag, "MW2022AmmoLarge", MW2022HUD.RightMargin - 160 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 131 * MW2022HUD.Scale,
-        MW2022HUD.WeaponData.CurrentMag >= MW2022HUD.WeaponData.MaxMag * 0.3 and color_white or LowRed, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-    draw.SimpleTextOutlined(MW2022HUD.WeaponData.Reserve, "MW2022AmmoSmall", MW2022HUD.RightMargin - 160 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 91 * MW2022HUD.Scale,
-        MW2022HUD.WeaponData.Reserve > 0 and ReserveGray or LowRed, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    if MW2022HUD.WeaponData.MaxMag == -1 then
+        draw.SimpleTextOutlined(MW2022HUD.WeaponData.UBGL and MW2022HUD.WeaponData.TotalAmmoAlt or MW2022HUD.WeaponData.TotalAmmo, "MW2022AmmoLarge", MW2022HUD.RightMargin - 160 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 131 * MW2022HUD.Scale,
+            MW2022HUD.WeaponData.CurrentMag >= MW2022HUD.WeaponData.MaxMag * 0.3 and color_white or LowRed, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    else
+        -- CoD seems to use some kind of TTK based detection for low ammo threshold or something? Waaaaay out of scope of what I can do though...
+        draw.SimpleTextOutlined(MW2022HUD.WeaponData.CurrentMag, "MW2022AmmoLarge", MW2022HUD.RightMargin - 160 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 131 * MW2022HUD.Scale,
+            MW2022HUD.WeaponData.CurrentMag >= MW2022HUD.WeaponData.MaxMag * 0.3 and color_white or LowRed, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+        draw.SimpleTextOutlined(MW2022HUD.WeaponData.Reserve, "MW2022AmmoSmall", MW2022HUD.RightMargin - 160 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 91 * MW2022HUD.Scale,
+            MW2022HUD.WeaponData.Reserve > 0 and ReserveGray or LowRed, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    end
 
     if MW2022HUD.Weapon.ARC9 and MW2022HUD.Weapon:GetJammed() or MW2022HUD.Weapon.ArcCW and MW2022HUD.Weapon:GetMalfunctionJam() then
         local reloadkey = string.upper(input.LookupBinding("+reload") or "???")
