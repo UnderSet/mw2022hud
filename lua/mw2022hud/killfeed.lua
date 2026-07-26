@@ -77,5 +77,5 @@ hook.Add("AddDeathNotice", "MW2022AddDeathNotice", function(attacker, atkTeam, i
 end)
 
 hook.Add("DrawDeathNotice", "MW2022HideDeathNotice", function()
-    if MW2022HUD.Enable then return false end
+    if MW2022HUD.Enable:GetBool() then return false end
 end)
