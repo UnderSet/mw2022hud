@@ -40,7 +40,7 @@ MW2022HUD.Killfeed.Draw = function()
             surface.DrawText(MW2022HUD.Killfeed.Kills[i].Victim)
         else
             surface.SetFont("MW2022KillfeedPlayerName")
-            local inflictorw, inflictorh = surface.GetTextSize("[Suicide]")
+            local inflictorw, inflictorh = surface.GetTextSize(MW2022HUD.Killfeed.Kills[i].Inflictor == "worldspawn" and "[Falling]" or "[Suicide]")
 
             surface.SetTextPos(MW2022HUD.LeftMargin + 25 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - (539 - i * 29) * MW2022HUD.Scale)
             surface.SetTextColor(color_white)
@@ -75,11 +75,6 @@ hook.Add("AddDeathNotice", "MW2022AddDeathNotice", function(attacker, atkTeam, i
     }
     table.insert(MW2022HUD.Killfeed.Kills, 1, killdata)
 end)
-
--- hook.Add( "DrawDeathNotice", "holohud2_deathnotice", function()
---     if not IsVisible() or not ELEMENT:IsVisible() then return end
---     return false
--- end)
 
 hook.Add("DrawDeathNotice", "MW2022HideDeathNotice", function()
     if MW2022HUD.Enable then return false end
