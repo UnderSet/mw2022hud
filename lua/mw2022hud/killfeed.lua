@@ -40,7 +40,7 @@ MW2022HUD.Killfeed.Draw = function()
             surface.DrawText(MW2022HUD.Killfeed.Kills[i].Victim)
         else
             surface.SetFont("MW2022KillfeedPlayerName")
-            local inflictorw, inflictorh = surface.GetTextSize("[Suicide]")
+            local inflictorw, inflictorh = surface.GetTextSize(MW2022HUD.Killfeed.Kills[i].Inflictor == "worldspawn" and "[Falling]" or "[Suicide]")
 
             surface.SetTextPos(MW2022HUD.LeftMargin + 25 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - (539 - i * 29) * MW2022HUD.Scale)
             surface.SetTextColor(color_white)
