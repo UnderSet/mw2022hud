@@ -23,7 +23,7 @@ MW2022HUD.Killfeed.Draw = function()
             surface.SetTextColor(MW2022HUD.Killfeed.Kills[i].Attacker != localnick and MW2022HUD.Killfeed.Kills[i].AttackTeamColor or SelfColor)
             surface.SetTextPos(MW2022HUD.LeftMargin + 25 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - (539 - i * 29) * MW2022HUD.Scale)
             surface.DrawText(MW2022HUD.Killfeed.Kills[i].Attacker)
-            if inflictorhasicon then
+            if inflictorhasicon or weapons.IsBasedOn(MW2022HUD.Killfeed.Kills[i].Inflictor, "arc9_base") then
                 inflictorw, inflictorh = killicon.GetSize(MW2022HUD.Killfeed.Kills[i].Inflictor, false)
                 killicon.Render(MW2022HUD.LeftMargin + 40 * MW2022HUD.Scale + attackerw, MW2022HUD.BottomMargin - vertshift - (539 - i * 29) * MW2022HUD.Scale - (inflictorh / 5),
                     MW2022HUD.Killfeed.Kills[i].Inflictor, 255)
