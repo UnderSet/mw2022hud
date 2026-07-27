@@ -1,5 +1,3 @@
-print("[MW2022HUD] Killfeed loaded")
-
 MW2022HUD.Killfeed = {}
 MW2022HUD.Killfeed.Kills = {}
 
@@ -79,3 +77,5 @@ end)
 hook.Add("DrawDeathNotice", "MW2022HideDeathNotice", function()
     if MW2022HUD.Enable:GetBool() then return false end
 end)
+
+print("[MWIIHUD] Killfeed loaded")

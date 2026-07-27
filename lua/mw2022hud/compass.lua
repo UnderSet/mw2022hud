@@ -59,3 +59,5 @@ MW2022HUD.Compass.Draw = function()
     draw.DrawText(math.abs(math.floor(dir)), "MW2022CompassText", MW2022HUD.ScreenWidth * 0.5 + 5, MW2022HUD.TopMargin + 43, color_white, TEXT_ALIGN_LEFT)
     draw.DrawText(cardinal, "MW2022CompassText", MW2022HUD.ScreenWidth * 0.5 - 5, MW2022HUD.TopMargin + 43, color_white, TEXT_ALIGN_RIGHT)
 end
+
+print("[MWIIHUD] Compass loaded")

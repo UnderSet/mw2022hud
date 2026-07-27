@@ -10,3 +10,5 @@ hook.Add("PostEntityTakeDamage", "MW2022PlayerDamageTaken", function(ent, dmginf
         net.Send(ent)
     end
 end)
+
+print("[MWIIHUD][SV] Damage indicator loaded")

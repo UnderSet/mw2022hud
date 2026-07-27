@@ -44,3 +44,5 @@ MW2022HUD.Vitals.Draw = function()
         end
     end
 end
+
+print("[MWIIHUD] Vitals module loaded")

@@ -31,3 +31,5 @@ end
 hook.Add("InitPostEntity", "MW2022MapInit", function() ply = LocalPlayer() end)
 
 MW2022HUD.Minimap.UpdateLayout()
+
+print("[MWIIHUD] Minimap loaded")

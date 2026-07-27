@@ -39,6 +39,8 @@ MW2022HUD.NullFunction = function() end
 
 MW2022HUD.SetupBounds()
 
+print("[MWIIHUD] Initializing HUD... --------------------------------")
+
 include("mw2022hud/fonts.lua")
 include("mw2022hud/compass.lua")
 include("mw2022hud/ammo.lua")
@@ -49,6 +51,7 @@ include("mw2022hud/killfeed.lua")
 include("mw2022hud/minimap.lua")
 include("mw2022hud/drawsystem.lua")
 
+print("[MWIIHUD] HUD initialization complete ------------------------")
 
 cvars.AddChangeCallback("MW2022HUD_XBounds", MW2022HUD.SetupBounds)
 cvars.AddChangeCallback("MW2022HUD_YBounds", MW2022HUD.SetupBounds)

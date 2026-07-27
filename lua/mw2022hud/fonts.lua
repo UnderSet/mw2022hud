@@ -83,3 +83,5 @@ surface.CreateFont("MW2022FiremodeNotice", {
     size = 30 * MW2022HUD.Scale,
     weight = 15,
 })
+
+print("[MWIIHUD] All fonts successfully created")

@@ -36,3 +36,5 @@ net.Receive("MW2022PlayerDamageTaken", function()
     print("DMG TAKEN: " .. ang)
     MW2022HUD.DamageIndicator.DamageAng[#MW2022HUD.DamageIndicator.DamageAng + 1] = {ang, false, CurTime() + 6}
 end)
+
+print("[MWIIHUD] Damage indicator loaded")
