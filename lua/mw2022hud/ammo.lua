@@ -268,3 +268,5 @@ concommand.Add("MW2022HUD_AddWeaponIconOffset", function(ply, cmd, args)
     MW2022HUD.WeaponIconOffsets[LocalPlayer():GetActiveWeapon():GetClass()] = x, y, scale
     file.Write("mw2022weaponiconoffsets.txt", util.Compress(util.TableToJSON(MW2022HUD.WeaponIconOffsets)))
 end)
+
+print("[MWIIHUD] Weapon info module loaded")

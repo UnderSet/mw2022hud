@@ -1,5 +1,3 @@
-print("[MWIIHUD] Loaded gamemode integration: Beatrun")
-
 local isinfection = GetGlobalBool("GM_INFECTION")
 local isdatatheft = GetGlobalBool("GM_DATATHEFT")
 local isdeathmatch = GetGlobalBool("GM_DEATHMATCH")
