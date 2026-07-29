@@ -91,7 +91,7 @@ MW2022HUD.GetFiremode = function(wep)
 
         -- behold the insanity
         firetype = wep:GetCurrentFiremodeTable().Mode
-        firetype = safety and 5 or firetype == 1 and 1 or firetype < 0 and 4 or firetype > 1 and math.min(firetype, 3)
+        firetype = safety and 5 or firetype < 0 and 4 or firetype > 1 and math.min(firetype, 3) or 1
     elseif wep.ArcCW then
         firemode = wep:GetFiremodeName()
         safety = wep:GetCurrentFiremode().Mode == 0 and true or false
