@@ -70,6 +70,8 @@ local GradientRight = Material("vgui/gradient-r")
 MW2022HUD.Score.SetScores = function() end
 
 MW2022HUD.Score.Draw = function()
+    if !MW2022HUD.EnableScore:GetBool() or (!MW2022HUD.Score.Enabled and MW2022HUD.EnableScore:GetInt() == 2) then return end
+
     -- debugging, comment at your wish
     -- MW2022HUD.ScoreData.MaxScore = 20
     -- MW2022HUD.ScoreData.AllyScore = math.Round(CurTime() * 4 % MW2022HUD.ScoreData.MaxScore)
@@ -90,6 +92,7 @@ MW2022HUD.Score.Draw = function()
     render.SetStencilReferenceValue( 9 )
     render.SetStencilFailOperation(STENCILOPERATION_REPLACE)
 
+    surface.SetDrawColor(255,255,255,255)
     surface.DrawRect(64, 0, 192, 256)
 
     render.SetStencilFailOperation(STENCILOPERATION_KEEP)
@@ -127,7 +130,6 @@ MW2022HUD.Score.Draw = function()
 
     if MW2022HUD.Score.UseCustomDraw then
         MW2022HUD.Score.CustomDraw()
-        print("hi there")
     else
         -- THESE ARE NOT WHAT YOU THINK THEY ARE.
         local AllyScoreRatio = 1 - MW2022HUD.ScoreData.AllyScore / MW2022HUD.ScoreData.MaxScore
@@ -143,7 +145,6 @@ MW2022HUD.Score.Draw = function()
             MW2022HUD.LeftMargin + 56 * MW2022HUD.Scale, MW2022HUD.TopMargin + 331 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
 
         if MW2022HUD.ScoreData.FFAMode then
-            print(MW2022HUD.ScoreData.FFALocalPos)
             draw.SimpleTextOutlined(string.CardinalToOrdinal(MW2022HUD.ScoreData.FFALocalPos), "MW2022GamemodeTime",
                 MW2022HUD.LeftMargin + 250 * MW2022HUD.Scale, MW2022HUD.TopMargin + 283 * MW2022HUD.Scale, WinningColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
             draw.SimpleTextOutlined(MW2022HUD.ScoreData.FFALocalPos != 1 and "1st" or "2nd", "MW2022GamemodeTime",
@@ -151,8 +152,6 @@ MW2022HUD.Score.Draw = function()
             draw.SimpleTextOutlined(MW2022HUD.ScoreData.FFAEnemyLeadName, "MW2022ScorePlayerName",
                 MW2022HUD.LeftMargin + 55 * MW2022HUD.Scale, MW2022HUD.TopMargin + 373 * MW2022HUD.Scale, LosingColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
 
-            print(string.CardinalToOrdinal(MW2022HUD.ScoreData.FFALocalPos))
-            print(MW2022HUD.ScoreData.FFALocalPos != 1 and "1st" or "2nd")
             if MW2022HUD.ScoreData.RemainingTime >= 0 then 
                 draw.SimpleTextOutlined(FormattedTime, "MW2022GamemodeTime", MW2022HUD.LeftMargin + 250 * MW2022HUD.Scale, MW2022HUD.TopMargin + 396 * MW2022HUD.Scale,
                     color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
