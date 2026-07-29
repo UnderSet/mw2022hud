@@ -49,6 +49,7 @@ include("mw2022hud/vitals.lua")
 include("mw2022hud/damageindicator.lua")
 include("mw2022hud/killfeed.lua")
 include("mw2022hud/minimap.lua")
+-- include("mw2022hud/callingcards.lua")
 include("mw2022hud/drawsystem.lua")
 
 print("[MWIIHUD] HUD initialization complete ------------------------")
