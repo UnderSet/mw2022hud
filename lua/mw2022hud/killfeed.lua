@@ -59,7 +59,7 @@ MW2022HUD.Killfeed.Draw = function()
 end
 
 hook.Add("AddDeathNotice", "MW2022AddDeathNotice", function(attacker, atkTeam, inflictor, victim, victimTeam) 
-    if MW2022HUD.Enable:GetBool() then return end
+    if !MW2022HUD.Enable:GetBool() then return end
 
     vertshift = (#MW2022HUD.Killfeed.Kills <= 0 and vertshift) or vertshift + 29 * MW2022HUD.Scale
 
