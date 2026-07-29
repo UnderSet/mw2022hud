@@ -106,8 +106,8 @@ end
 -- net.Receive("Infection_End", function() InfectionEndTime = net.ReadFloat() end)\
 
 -- snippet used while testing sorting
-for _, p in ipairs(player.GetAll()) do
-	if !IsValid(p) then continue end
+-- for _, p in ipairs(player.GetAll()) do
+-- 	if !IsValid(p) then continue end
 
-	p:SetNW2Int("DeathmatchKills", math.Rand(0, 32))
-end
+-- 	p:SetNW2Int("DeathmatchKills", math.Rand(0, 32))
+-- end
