@@ -145,6 +145,15 @@ MW2022HUD.Ammo.Draw = function()
     surface.SetDrawColor(166,177,179)
     surface.DrawRect(MW2022HUD.RightMargin - 150 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 125 * MW2022HUD.Scale, 2 * MW2022HUD.Scale, 50 * MW2022HUD.Scale)
 
+    if !LocalPlayer():Alive() then return end
+
+    surface.DrawCircle(MW2022HUD.RightMargin - 115 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 101 * MW2022HUD.Scale, 4 * MW2022HUD.Scale, color_white)
+    surface.DrawCircle(MW2022HUD.RightMargin - 55 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 101 * MW2022HUD.Scale, 4 * MW2022HUD.Scale, color_white)
+    draw.SimpleTextOutlined("0", "MW2022AmmoSmall", MW2022HUD.RightMargin - 115 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 139 * MW2022HUD.Scale, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    draw.SimpleTextOutlined("0", "MW2022AmmoSmall", MW2022HUD.RightMargin - 55 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 139 * MW2022HUD.Scale, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+
+    -- weapon block below here; result of LocalPlayer():GetActiveWeapon() becomes invalid before LocalPlayer():Alive() returns false for some reason
+    --   so this is needed to ensure hud doesn't blow into pieces
     if !IsValid(MW2022HUD.Weapon) then return end
 
     if !IsValid(MW2022HUD.LastWeapon) or MW2022HUD.LastWeapon != MW2022HUD.Weapon then
