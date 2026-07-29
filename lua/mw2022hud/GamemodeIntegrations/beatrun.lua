@@ -20,6 +20,8 @@ local function playersort(a, b)
 end
 
 MW2022HUD.Score.SetScores = function()
+	local ply = LocalPlayer()
+
 	isinfection = GetGlobalBool("GM_INFECTION")
     isdatatheft = GetGlobalBool("GM_DATATHEFT")
     isdeathmatch = GetGlobalBool("GM_DEATHMATCH")
@@ -27,13 +29,12 @@ MW2022HUD.Score.SetScores = function()
     MW2022HUD.Score.Enabled = (isdatatheft or isdeathmatch or isinfection) and true or false
 	MW2022HUD.ScoreData.FFAMode = (isdatatheft or isdeathmatch) and true or false
 
-    MW2022HUD.Score.OverrideGamemodeName = isinfection and "INFECTION" or isdatatheft and "DATA THEFT" or isdeathmatch and "DEATHMATCH" or ""
+    MW2022HUD.Score.OverrideGamemodeName = isinfection and ("INFECTION: " .. (ply:GetNW2Bool("INFECTED") and "INFECTOR" or "HUMAN"))
+	  or isdatatheft and "DATA THEFT" or isdeathmatch and "DEATHMATCH" or ""
 
 	if !isinfection and !isdatatheft and !isdeathmatch then return end
 
     local enemyscore = 0
-
-    local ply = LocalPlayer()
 
     local allply = allply or player.GetAll()
     local displayPlayers = {}
