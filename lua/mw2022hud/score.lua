@@ -54,9 +54,9 @@ local GamemodeGray = Color(185,185,185,183)
 local ScoreBG = Color(44,44,44,94)
 local MaterialColor = Material("color")
 
-local AllyColor = Color(0,151,48)
+local AllyColor = Color(21, 182, 207)
 local EnemyColor = Color(162,24,0)
-local AllyColorGradient = Color(0,205,66)
+local AllyColorGradient = Color(24, 210, 240)
 local EnemyColorGradient = Color(248,39,0)
 
 -- Neutral color is just white (color_white)
