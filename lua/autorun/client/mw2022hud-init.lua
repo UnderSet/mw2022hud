@@ -5,6 +5,7 @@ MW2022HUD.EnableCompass = CreateClientConVar("MW2022HUD_EnableCompass", 1, true,
 MW2022HUD.EnableMinimap = CreateClientConVar("MW2022HUD_EnableMinimap", 1, true, true, "EXPERIMENTAL: Enable the minimap just above the score display.\nGMinimap REQUIRED TO FUNCTION.", 0, 1)
 MW2022HUD.EnableMinimapRotation = CreateClientConVar("MW2022HUD_EnableMinimapRotation", 1, true, true, "Allow the minimap to rotate.", 0, 1)
 MW2022HUD.EnableHealth = CreateClientConVar("MW2022HUD_EnableHealth", 1, true, true, "Enable the HUD's health display.\n1: Display health, armor and player name\n2: Display only armor", 0, 2)
+MW2022HUD.EnableScore = CreateClientConVar("MW2022HUD_EnableScore", 1, true, true, "Enable the HUD's scoring element.\nNOTE: Only affects if it's displayed in HUD or not. Requires gamemode support.\n1: Show gamemode icon, name and scores at all times\n2: Only show if actively displaying scores", 0, 2)
 MW2022HUD.XBounds = CreateClientConVar("MW2022HUD_XBounds", 100, true, true, "Set horizontal bounds.", 0, 100)
 MW2022HUD.YBounds = CreateClientConVar("MW2022HUD_YBounds", 100, true, true, "Set vertical bounds.", 0, 100)
 
