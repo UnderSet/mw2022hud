@@ -29,6 +29,9 @@ hook.Add("HUDPaint", "MW2022HUDRun", function()
     MW2022HUD.Score.Draw()
 
     MW2022HUD.Killfeed.Draw()
+
+    -- I'm genuinely unsure if the calling cards draw if you're dead in MWII itself so uh...
+    -- MW2022HUD.CallingCards.Draw()
 end)
 
 hook.Add("HUDShouldDraw", "MW2022HUDHideDefault", function(name)
