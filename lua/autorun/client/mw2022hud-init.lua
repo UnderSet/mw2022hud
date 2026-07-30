@@ -1,4 +1,5 @@
 MW2022HUD = MW2022HUD or {}
+MW2022HUD.Debug = {} -- don't touch this one, will ya?
 
 MW2022HUD.Enable = CreateClientConVar("MW2022HUD_Enable", 1, true, true, "Enable the MW2022 HUD.", 0, 1)
 MW2022HUD.EnableCompass = CreateClientConVar("MW2022HUD_EnableCompass", 1, true, true, "Enable the compass at the top of the screen.", 0, 1)

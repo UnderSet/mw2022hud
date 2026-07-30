@@ -22,6 +22,8 @@ local WeaponNameTime = CurTime() + 1.5
 local AmmoTypeName = CurTime() + 1.5
 local FiremodeNoticeTime = CurTime() + 1.5
 
+MW2022HUD.Debug.DisableWeaponIconScaling = CreateClientConVar("MW2022HUD_Debug_DisableWeaponIconScaling", 0, false, false, "DEBUG: Temporarily disables weapon icon scaling functionality. Setting is not saved.", 0, 1)
+
 MW2022HUD.Materials.FireGroups = {{Material("iw9ui/ui_firetype_semiauto.png")}, {Material("iw9ui/ui_firetype_hyperburst.png")}, {Material("iw9ui/ui_firetype_burst.png")}, {Material("iw9ui/ui_firetype_fullauto.png")}, {Material("mw2022/ui_firetype_safe.png")}}
 
 MW2022HUD.WeaponIconRT = GetRenderTarget("MW5WeaponIcon", 512 * math.Round(MW2022HUD.Scale), 256 * math.Round(MW2022HUD.Scale))
@@ -47,6 +49,26 @@ MW2022HUD.WeaponIconColorCorrect = {
 }
 
 MW2022HUD.WeaponIconOffsets = file.Exists("mw2022weaponiconoffsets.txt", "DATA") and util.JSONToTable(util.Decompress(file.Read("mw2022weaponiconoffsets.txt", "DATA"))) or {}
+
+MW2022HUD.WeaponIconPrerenders = {
+    ["weapon_357"] = select(1, Material("mw2022/weaponicons/weapon_357.png", "mips smooth")),
+    ["weapon_ar2"] = select(1, Material("mw2022/weaponicons/weapon_ar2.png", "mips smooth")),
+    ["weapon_bugbait"] = select(1, Material("mw2022/weaponicons/weapon_bugbait.png", "mips smooth")),
+    ["weapon_crossbow"] = select(1, Material("mw2022/weaponicons/weapon_crossbow.png", "mips smooth")),
+    ["weapon_crowbar"] = select(1, Material("mw2022/weaponicons/weapon_crowbar.png", "mips smooth")),
+    ["weapon_frag"] = select(1, Material("mw2022/weaponicons/weapon_frag.png", "mips smooth")),
+    ["weapon_physcannon"] = select(1, Material("mw2022/weaponicons/weapon_physcannon.png", "mips smooth")),
+    ["weapon_physgun"] = select(1, Material("mw2022/weaponicons/weapon_physcannon.png", "mips smooth")),
+    ["weapon_pistol"] = select(1, Material("mw2022/weaponicons/weapon_pistol.png", "mips smooth")),
+    ["weapon_rpg"] = select(1, Material("mw2022/weaponicons/weapon_rpg.png", "mips smooth")),
+    ["weapon_shotgun"] = select(1, Material("mw2022/weaponicons/weapon_shotgun.png", "mips smooth")),
+    ["weapon_slam"] = select(1, Material("mw2022/weaponicons/weapon_slam.png", "mips smooth")),
+    ["weapon_stunstick"] = select(1, Material("mw2022/weaponicons/weapon_stunstick.png", "mips smooth")),
+    ["weapon_smg1"] = select(1, Material("mw2022/weaponicons/weapon_smg1.png", "mips smooth")),
+    ["gmod_tool"] = select(1, Material("mw2022/weaponicons/gmod_tool.png", "mips smooth"))
+}
+
+MW2022HUD.Ammo.EnableFiremodeNotice = CreateClientConVar("MW2022HUD_EnableAmmoFiremodeNotice", 1, true, true, "Enable the firemode notice text whenever you switch weapons or firemodes.", 0, 1)
 
 MW2022HUD.Ammo.SetupWeaponData = function()
     local ply = LocalPlayer()
@@ -114,7 +136,7 @@ end
 MW2022HUD.DrawWeaponIcon = function(wep, x, y, w, h)
     local offx, offy, sclw, sclh = 0, 0, MW2022HUD.WeaponIconRTWidth, MW2022HUD.WeaponIconRTHeight
     local class = wep:GetClass()
-    if MW2022HUD.WeaponIconOffsets[class] then
+    if MW2022HUD.WeaponIconOffsets[class] and !MW2022HUD.Debug.DisableWeaponIconScaling:GetBool() then
         local scalemod = MW2022HUD.WeaponIconOffsets[class][3]
         offx = MW2022HUD.WeaponIconOffsets[class][1] * MW2022HUD.Scale + (sclw / 2 * (1 - scalemod))
         offy = MW2022HUD.WeaponIconOffsets[class][2] * MW2022HUD.Scale + (sclh / 2 * (1 - scalemod))
@@ -179,8 +201,14 @@ MW2022HUD.Ammo.Draw = function()
     FiremodeNoticeColor.a = 255 * math.Clamp((FiremodeNoticeTime - CurTime()) * 4, 0, 1)
     FiremodeNoticeOutline.a = 55 * math.Clamp((FiremodeNoticeTime - CurTime()) * 4, 0, 1)
 
+    if !MW2022HUD.WeaponIconPrerenders[MW2022HUD.Weapon:GetClass()] then
     MW2022HUD.DrawWeaponIcon(MW2022HUD.Weapon, MW2022HUD.RightMargin - 500 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 173 * MW2022HUD.Scale, 280 * MW2022HUD.Scale, 140 * MW2022HUD.Scale)
-    -- surface.DrawOutlinedRect(MW2022HUD.RightMargin - 510 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 180 * MW2022HUD.Scale, 300 * MW2022HUD.Scale, 150 * MW2022HUD.Scale)
+    else
+        surface.SetMaterial(MW2022HUD.WeaponIconPrerenders[MW2022HUD.Weapon:GetClass()])
+        surface.SetDrawColor(color_white)
+        surface.DrawTexturedRect(MW2022HUD.RightMargin - 500 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 173 * MW2022HUD.Scale, 280 * MW2022HUD.Scale, 140 * MW2022HUD.Scale)
+    end
+    -- surface.DrawOutlinedRect(MW2022HUD.RightMargin - 500 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 173 * MW2022HUD.Scale, 280 * MW2022HUD.Scale, 140 * MW2022HUD.Scale)
 
     draw.SimpleTextOutlined(MW2022HUD.Weapon:GetPrintName(), "MW2022AmmoSmall", MW2022HUD.RightMargin - 400 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 181 * MW2022HUD.Scale, WeaponNameColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, WeaponNameOutline)
     draw.SimpleTextOutlined(MW2022HUD.WeaponData.UBGL and MW2022HUD.WeaponData.AmmoTypeAltName or MW2022HUD.WeaponData.AmmoTypeName, "MW2022AmmoType", MW2022HUD.RightMargin - 402 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 161 * MW2022HUD.Scale,
@@ -237,9 +265,9 @@ MW2022HUD.Ammo.Draw = function()
         draw.SimpleTextOutlined("RELOAD", "MW2022AmmoNotice", MW2022HUD.ScreenWidth / 2 - offsetw / 2 + 29 * MW2022HUD.Scale, MW2022HUD.ScreenHeight / 2 + 88 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
     end
 
-    if MW2022HUD.WeaponData.UBGL then
+    if MW2022HUD.WeaponData.UBGL and MW2022HUD.Ammo.EnableFiremodeNotice:GetBool() then
         draw.SimpleTextOutlined("Altfire: " .. MW2022HUD.WeaponData.FireMode, "MW2022FiremodeNotice", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 95 * MW2022HUD.Scale, FiremodeNoticeColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 2, FiremodeNoticeOutline)
-    else
+    elseif MW2022HUD.Ammo.EnableFiremodeNotice:GetBool() then
         draw.SimpleTextOutlined("Fire Type: " .. MW2022HUD.WeaponData.FireMode, "MW2022FiremodeNotice", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 95 * MW2022HUD.Scale, FiremodeNoticeColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 2, FiremodeNoticeOutline)
     end
     
