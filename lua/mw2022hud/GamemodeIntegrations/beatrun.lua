@@ -59,7 +59,7 @@ MW2022HUD.Score.SetScores = function()
 			end
 		end
 	else
-		if displayPlayers[1] == LocalPlayer() then
+		if displayPlayers[1] == LocalPlayer() and IsValid(displayPlayers[2]) then
 			enemylead = displayPlayers[2]
 			enemyscore = isdatatheft and displayPlayers[2]:GetNW2Int("DataBanked", 0)
 				or isdeathmatch and displayPlayers[2]:GetNW2Int("DeathmatchKills", 0)
