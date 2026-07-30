@@ -26,7 +26,7 @@ Code license is to be decided as of me writing this part.
 *All* files under [`materials/`](/materials/) are either original textures from Modern Warfare II or edits of said textures, and are copyright Activision and Infinity Ward.
 
 ## Credits
-- for [Iconic Weapon Selector], which is where I got the weapon icon method from
+- Tripperful for [Iconic Weapon Selector](https://github.com/Tripperful/iconic), which is where I got the weapon icon method from
 - Scobalula, dest1yo and echo000 for Cordycep and Saluki, which was used to get MWII's HUD assets
 
 Let me know if you feel like you should be credited here but aren't.
