@@ -68,6 +68,13 @@ MW2022HUD.WeaponIconPrerenders = {
     ["gmod_tool"] = select(1, Material("mw2022/weaponicons/gmod_tool.png", "mips smooth"))
 }
 
+MW2022HUD.Ammo.Lethals = {}
+MW2022HUD.Ammo.Tacticals = {}
+MW2022HUD.Ammo.Lethals.Count = -1
+MW2022HUD.Ammo.Lethals.Material = nil
+MW2022HUD.Ammo.Tacticals.Count = -1
+MW2022HUD.Ammo.Tacticals.Material = nil
+
 MW2022HUD.Ammo.EnableFiremodeNotice = CreateClientConVar("MW2022HUD_EnableAmmoFiremodeNotice", 1, true, true, "Enable the firemode notice text whenever you switch weapons or firemodes.", 0, 1)
 
 MW2022HUD.Ammo.SetupWeaponData = function()
@@ -169,15 +176,27 @@ MW2022HUD.Ammo.Draw = function()
 
     if !LocalPlayer():Alive() then return end
 
-    surface.DrawCircle(MW2022HUD.RightMargin - 115 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 101 * MW2022HUD.Scale, 4 * MW2022HUD.Scale, color_white)
-    surface.DrawCircle(MW2022HUD.RightMargin - 55 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 101 * MW2022HUD.Scale, 4 * MW2022HUD.Scale, color_white)
-    draw.SimpleTextOutlined("0", "MW2022AmmoSmall", MW2022HUD.RightMargin - 115 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 139 * MW2022HUD.Scale, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-    draw.SimpleTextOutlined("0", "MW2022AmmoSmall", MW2022HUD.RightMargin - 55 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 139 * MW2022HUD.Scale, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    if MW2022HUD.Ammo.Lethals.Count > -1 then
+        surface.SetMaterial(MW2022HUD.Ammo.Lethals.Material)
+        surface.SetDrawColor(color_white)
+        surface.DrawTexturedRect(MW2022HUD.RightMargin - 69 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 116 * MW2022HUD.Scale, 36 * MW2022HUD.Scale, 36 * MW2022HUD.Scale)
+        draw.SimpleTextOutlined(MW2022HUD.Ammo.Lethals.Count, "MW2022AmmoSmall", MW2022HUD.RightMargin - 55 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 139 * MW2022HUD.Scale, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    else
+        surface.DrawCircle(MW2022HUD.RightMargin - 55 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 101 * MW2022HUD.Scale, 4 * MW2022HUD.Scale, color_white)
+    end
+    if MW2022HUD.Ammo.Tacticals.Count > -1 then
+        surface.SetMaterial(MW2022HUD.Ammo.Tacticals.Material)
+        surface.SetDrawColor(color_white)
+        surface.DrawTexturedRect(MW2022HUD.RightMargin - 130 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 116 * MW2022HUD.Scale, 36 * MW2022HUD.Scale, 36 * MW2022HUD.Scale)
+        draw.SimpleTextOutlined(MW2022HUD.Ammo.Tacticals.Count, "MW2022AmmoSmall", MW2022HUD.RightMargin - 115 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 139 * MW2022HUD.Scale, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    else
+        surface.DrawCircle(MW2022HUD.RightMargin - 115 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 101 * MW2022HUD.Scale, 4 * MW2022HUD.Scale, color_white)
+    end
 
     -- weapon block below here; result of LocalPlayer():GetActiveWeapon() becomes invalid before LocalPlayer():Alive() returns false for some reason
     --   so this is needed to ensure hud doesn't blow into pieces
     if !IsValid(MW2022HUD.Weapon) then return end
-
+    
     if !IsValid(MW2022HUD.LastWeapon) or MW2022HUD.LastWeapon != MW2022HUD.Weapon then
         WeaponNameTime = CurTime() + 1.5
         AmmoTypeTime = CurTime() + 1.5
