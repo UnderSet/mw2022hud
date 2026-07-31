@@ -21,5 +21,6 @@ end
 
 include("mw2022hud/server/damageindicator.lua")
 
+resource.AddSingleFile("resource/fonts/Stratum2.ttf")
 resource.AddSingleFile("resource/fonts/NotoSans-Bold.ttf")
 resource.AddSingleFile("resource/fonts/NotoSans-Regular.ttf")
