@@ -54,6 +54,10 @@ include("mw2022hud/minimap.lua")
 -- include("mw2022hud/callingcards.lua")
 include("mw2022hud/drawsystem.lua")
 
+for _, v in ipairs(file.Find("mw2022hud/AddonIntegrations/*.lua", "LUA")) do
+    include("mw2022hud/AddonIntegrations/" .. v)
+end
+
 print("[MWIIHUD] HUD initialization complete ------------------------")
 
 cvars.AddChangeCallback("MW2022HUD_XBounds", MW2022HUD.SetupBounds)

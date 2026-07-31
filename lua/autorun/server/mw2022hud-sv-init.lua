@@ -15,6 +15,10 @@ if file.Exists("lua/mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() 
     AddCSLuaFile("mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() .. ".lua")
 end
 
+for _, v in ipairs(file.Find("mw2022hud/AddonIntegrations/*.lua", "LUA")) do
+    AddCSLuaFile("mw2022hud/AddonIntegrations/" .. v)
+end
+
 include("mw2022hud/server/damageindicator.lua")
 
 resource.AddSingleFile("resource/fonts/NotoSans-Bold.ttf")

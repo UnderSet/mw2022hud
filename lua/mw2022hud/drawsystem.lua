@@ -9,6 +9,8 @@ MW2022HUD.HideElements = {
 hook.Add("HUDPaint", "MW2022HUDRun", function()
     if !MW2022HUD.Enable:GetBool() then return end
 
+    hook.Run("MW2022HUD_OnFramePreDraw")
+
     if !LocalPlayer():Alive() then
         -- reset damage directions
         MW2022HUD.DamageIndicator.DamageAng = {}
