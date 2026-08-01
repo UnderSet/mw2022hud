@@ -77,10 +77,51 @@ MW2022HUD.Ammo.Tacticals.Material = nil
 
 MW2022HUD.Ammo.EnableFiremodeNotice = CreateClientConVar("MW2022HUD_EnableAmmoFiremodeNotice", 1, true, true, "Enable the firemode notice text whenever you switch weapons or firemodes.", 0, 1)
 
+MW2022HUD.Ammo.ARC9TriviaCaliberKeys = {} -- see GetARC9Caliber(); also these are not keys as in keyboard keys but rather table keys
+
+local function GetARC9Caliber(wep)
+    -- basically? this is a GIANT HEURISTIC to find calibers.
+    -- only works properly for English, obviously, as trivia is fully customizable in ARC9...
+    
+    -- if you don't play GMod in English...I'm sorry...
+
+    -- uncomment the print() calls here if you'd like to see how this works behind the scenes
+
+    if MW2022HUD.Ammo.ARC9TriviaCaliberKeys[MW2022HUD.WeaponData.ClassName] then
+        -- print("CACHED KEY: " .. MW2022HUD.Ammo.ARC9TriviaCaliberKeys[MW2022HUD.WeaponData.ClassName])
+        -- print("- WEAPON: " .. MW2022HUD.WeaponData.ClassName)
+
+        -- I'm...aware this looks disastrous...deranged even...
+        return (ARC9:GetPhrase(wep.Trivia[MW2022HUD.Ammo.ARC9TriviaCaliberKeys[MW2022HUD.WeaponData.ClassName]])
+            or wep.Trivia[MW2022HUD.Ammo.ARC9TriviaCaliberKeys[MW2022HUD.WeaponData.ClassName]])
+    end
+
+    -- print(" ")
+    for k,v in pairs(wep.Trivia) do
+        -- print(k)
+        local TriviaKey = ARC9:GetPhrase(string.sub(k, 0, #k-1)) or string.sub(k, 0, #k-1)
+        local TriviaKeyAlt = ARC9:GetPhrase(k) or k
+        -- print(TriviaKey)
+        if string.match(TriviaKey, "Caliber") or string.match(TriviaKey, "Calibre") then
+            -- print(ARC9:GetPhrase(wep.Trivia[k]) or wep.Trivia[k])
+            MW2022HUD.Ammo.ARC9TriviaCaliberKeys[MW2022HUD.WeaponData.ClassName] = k
+            return (ARC9:GetPhrase(wep.Trivia[k]) or wep.Trivia[k])
+        end
+
+        if string.match(TriviaKeyAlt, "Caliber") or string.match(TriviaKeyAlt, "Calibre") then
+            -- print(ARC9:GetPhrase(wep.Trivia[k]) or wep.Trivia[k])
+            MW2022HUD.Ammo.ARC9TriviaCaliberKeys[MW2022HUD.WeaponData.ClassName] = k
+            return (ARC9:GetPhrase(wep.Trivia[k]) or wep.Trivia[k])
+        end
+    end
+end
+
 MW2022HUD.Ammo.SetupWeaponData = function()
     local ply = LocalPlayer()
     MW2022HUD.Weapon = ply:GetActiveWeapon()
     if !IsValid(MW2022HUD.Weapon) then return end
+
+    MW2022HUD.WeaponData.ClassName = MW2022HUD.Weapon:GetClass()
 
     MW2022HUD.WeaponData.CurrentMag = math.max(MW2022HUD.Weapon:Clip1(), 0)
     MW2022HUD.WeaponData.CurrentMagAlt = math.max(MW2022HUD.Weapon:Clip2(), 0)
@@ -91,7 +132,7 @@ MW2022HUD.Ammo.SetupWeaponData = function()
     MW2022HUD.WeaponData.AmmoTypeAlt = MW2022HUD.Weapon:GetSecondaryAmmoType()
 
     MW2022HUD.WeaponData.AmmoTypeName = MW2022HUD.Weapon.ArcCW and (MW2022HUD.Weapon:GetBuff_Override("Override_Trivia_Calibre") or MW2022HUD.Weapon.Trivia_Calibre)
-        or MW2022HUD.Weapon.ARC9 and MW2022HUD.Weapon.Trivia.Caliber3 -- note: not all ARC9 packs use Caliber3 so uh...
+        or MW2022HUD.Weapon.ARC9 and GetARC9Caliber(MW2022HUD.Weapon) -- ARC9 caliber reading is very hacky heuristics driven and only works in English, unfortunately
         or language.GetPhrase(game.GetAmmoName(MW2022HUD.WeaponData.AmmoType) or "Melee/Tool")
     MW2022HUD.WeaponData.AmmoTypeAltName = language.GetPhrase(game.GetAmmoName(MW2022HUD.WeaponData.AmmoTypeAlt) or "Melee/Tool")
 
@@ -142,7 +183,7 @@ end
 
 MW2022HUD.DrawWeaponIcon = function(wep, x, y, w, h)
     local offx, offy, sclw, sclh = 0, 0, MW2022HUD.WeaponIconRTWidth, MW2022HUD.WeaponIconRTHeight
-    local class = wep:GetClass()
+    local class = MW2022HUD.WeaponData.ClassName
     if MW2022HUD.WeaponIconOffsets[class] and !MW2022HUD.Debug.DisableWeaponIconScaling:GetBool() then
         local scalemod = MW2022HUD.WeaponIconOffsets[class][3]
         offx = MW2022HUD.WeaponIconOffsets[class][1] * MW2022HUD.Scale + (sclw / 2 * (1 - scalemod))
@@ -220,10 +261,10 @@ MW2022HUD.Ammo.Draw = function()
     FiremodeNoticeColor.a = 255 * math.Clamp((FiremodeNoticeTime - CurTime()) * 4, 0, 1)
     FiremodeNoticeOutline.a = 55 * math.Clamp((FiremodeNoticeTime - CurTime()) * 4, 0, 1)
 
-    if !MW2022HUD.WeaponIconPrerenders[MW2022HUD.Weapon:GetClass()] then
+    if !MW2022HUD.WeaponIconPrerenders[MW2022HUD.WeaponData.ClassName] then
     MW2022HUD.DrawWeaponIcon(MW2022HUD.Weapon, MW2022HUD.RightMargin - 500 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 173 * MW2022HUD.Scale, 280 * MW2022HUD.Scale, 140 * MW2022HUD.Scale)
     else
-        surface.SetMaterial(MW2022HUD.WeaponIconPrerenders[MW2022HUD.Weapon:GetClass()])
+        surface.SetMaterial(MW2022HUD.WeaponIconPrerenders[MW2022HUD.WeaponData.ClassName])
         surface.SetDrawColor(color_white)
         surface.DrawTexturedRect(MW2022HUD.RightMargin - 500 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 173 * MW2022HUD.Scale, 280 * MW2022HUD.Scale, 140 * MW2022HUD.Scale)
     end
