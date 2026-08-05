@@ -21,6 +21,8 @@ MW2022HUD.Minimap.Draw = function()
 end
 
 MW2022HUD.Minimap.UpdateLayout = function()
+    if !radar then return end
+
     radar.ratio = 8
     radar:SetDimensions(MW2022HUD.LeftMargin + 26 * MW2022HUD.Scale, MW2022HUD.TopMargin + 22 * MW2022HUD.Scale,
     218 * MW2022HUD.Scale, 218 * MW2022HUD.Scale)
