@@ -18,6 +18,8 @@ local CompassAnglesText = {"N",15,30,"NE",60,75,"E",105,120,"SE",150,165,"S",195
 
 local CompassAngleColor = color_white:Copy()
 
+local OutlineBlack = Color(66,66,66,55)
+
 MW2022HUD.Compass.Draw = function()
     if !MW2022HUD.EnableCompass:GetBool() then return end
 
@@ -78,13 +80,8 @@ MW2022HUD.Compass.Draw = function()
     surface.SetDrawColor(color_white)
     surface.DrawRect(MW2022HUD.ScreenWidth * 0.5 - 1 * 0.5, MW2022HUD.TopMargin + 40, 1, 21)
 
-    draw.DrawText(math.abs(math.floor(dir)), "MW2022CompassText", MW2022HUD.ScreenWidth * 0.5 + 5, MW2022HUD.TopMargin + 43, color_white, TEXT_ALIGN_LEFT)
-    draw.DrawText(cardinal, "MW2022CompassText", MW2022HUD.ScreenWidth * 0.5 - 5, MW2022HUD.TopMargin + 43, color_white, TEXT_ALIGN_RIGHT)
-
-
-    -- surface.SetMaterial(MW2022HUD.Materials.CompassBacker)
-    -- surface.SetDrawColor(255,255,255,160)
-    -- surface.DrawTexturedRect(MW2022HUD.ScreenWidth * 0.5 - 700, MW2022HUD.TopMargin + 43, 1400, 40)
+    draw.SimpleTextOutlined(math.abs(math.floor(dir)), "MW2022CompassText", MW2022HUD.ScreenWidth * 0.5 + 5, MW2022HUD.TopMargin + 43, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    draw.SimpleTextOutlined(cardinal, "MW2022CompassText", MW2022HUD.ScreenWidth * 0.5 - 5, MW2022HUD.TopMargin + 43, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
 end
 
 print("[MWIIHUD] Compass loaded")
