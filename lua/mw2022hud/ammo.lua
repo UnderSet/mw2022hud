@@ -239,25 +239,33 @@ MW2022HUD.Ammo.Draw = function()
     if !IsValid(MW2022HUD.Weapon) then return end
     
     if !IsValid(MW2022HUD.LastWeapon) or MW2022HUD.LastWeapon != MW2022HUD.Weapon then
-        WeaponNameTime = CurTime() + 1.5
-        AmmoTypeTime = CurTime() + 1.5
-        FiremodeNoticeTime = CurTime() + 1.5
+        WeaponNameTime = CurTime() + (5/3) -- the actual MWII HUD keeps this on screen for 100 frames (60fps) ≈ 1.66666666... seconds
+        AmmoTypeTime = CurTime() + (5/3)
+        FiremodeNoticeTime = CurTime() + (5/3)
         MW2022HUD.LastWeapon = MW2022HUD.Weapon
         MW2022HUD.LastUBState = MW2022HUD.WeaponData.UBGL
-    end
-    if MW2022HUD.LastUBState != MW2022HUD.WeaponData.UBGL then
-        AmmoTypeTime = CurTime() + 1.5
+        WeaponNameColor.a = 0
+        WeaponNameOutline.a = 0
+        AmmoTypeNameColor.a = 0
+        AmmoTypeNameOutline.a = 0
+    elseif MW2022HUD.LastUBState != MW2022HUD.WeaponData.UBGL then
+        AmmoTypeTime = CurTime() + (5/3)
         MW2022HUD.LastUBState = MW2022HUD.WeaponData.UBGL
-    end
-    if MW2022HUD.LastFiremode != MW2022HUD.WeaponData.FireMode then
-        FiremodeNoticeTime = CurTime() + 1.5
+        AmmoTypeNameColor.a = 0
+        AmmoTypeNameOutline.a = 0
+    elseif MW2022HUD.LastFiremode != MW2022HUD.WeaponData.FireMode then
+        FiremodeNoticeTime = CurTime() + (5/3)
         MW2022HUD.LastFiremode = MW2022HUD.WeaponData.FireMode
     end
 
-    WeaponNameColor.a = 255 * math.Clamp((WeaponNameTime - CurTime()) * 4, 0, 1)
-    WeaponNameOutline.a = 55 * math.Clamp((WeaponNameTime - CurTime()) * 4, 0, 1)
-    AmmoTypeNameColor.a = 255 * math.Clamp((AmmoTypeTime - CurTime()) * 4, 0, 1)
-    AmmoTypeNameOutline.a = 55 * math.Clamp((AmmoTypeTime - CurTime()) * 4, 0, 1)
+    WeaponNameColor.a = WeaponNameTime > CurTime() and math.Approach(WeaponNameColor.a, 255, FrameTime() * 6 * 255)
+        or math.Approach(WeaponNameColor.a, 0, FrameTime() * 6 * 255)
+    WeaponNameOutline.a = WeaponNameTime > CurTime() and math.Approach(WeaponNameOutline.a, 55, FrameTime() * 6 * 55)
+        or math.Approach(WeaponNameOutline.a, 0, FrameTime() * 6 * 55)
+    AmmoTypeNameColor.a = WeaponNameTime > CurTime() and math.Approach(AmmoTypeNameColor.a, 255, FrameTime() * 6 * 255)
+        or math.Approach(AmmoTypeNameColor.a, 0, FrameTime() * 6 * 255)
+    AmmoTypeNameOutline.a = WeaponNameTime > CurTime() and math.Approach(AmmoTypeNameOutline.a, 55, FrameTime() * 6 * 55)
+        or math.Approach(AmmoTypeNameOutline.a, 0, FrameTime() * 6 * 55)
     FiremodeNoticeColor.a = 255 * math.Clamp((FiremodeNoticeTime - CurTime()) * 4, 0, 1)
     FiremodeNoticeOutline.a = 55 * math.Clamp((FiremodeNoticeTime - CurTime()) * 4, 0, 1)
 
