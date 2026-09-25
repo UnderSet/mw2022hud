@@ -334,9 +334,9 @@ MW2022HUD.Ammo.Draw = function()
     end
 
     if MW2022HUD.WeaponData.UBGL and MW2022HUD.Ammo.EnableFiremodeNotice:GetBool() then
-        draw.SimpleTextOutlined("Altfire: " .. MW2022HUD.WeaponData.FireMode, "MW2022FiremodeNotice", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 95 * MW2022HUD.Scale, FiremodeNoticeColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 2, FiremodeNoticeOutline)
+        draw.SimpleTextOutlined(string.upper("Altfire: " .. MW2022HUD.WeaponData.FireMode), "MW2022FiremodeNotice", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 95 * MW2022HUD.Scale, FiremodeNoticeColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1.5, FiremodeNoticeOutline)
     elseif MW2022HUD.Ammo.EnableFiremodeNotice:GetBool() then
-        draw.SimpleTextOutlined("Fire Type: " .. MW2022HUD.WeaponData.FireMode, "MW2022FiremodeNotice", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 95 * MW2022HUD.Scale, FiremodeNoticeColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 2, FiremodeNoticeOutline)
+        draw.SimpleTextOutlined(string.upper("Fire Type: " .. MW2022HUD.WeaponData.FireMode), "MW2022FiremodeNotice", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 95 * MW2022HUD.Scale, FiremodeNoticeColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1.5, FiremodeNoticeOutline)
     end
     
     surface.SetDrawColor(color_white)

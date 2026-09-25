@@ -89,7 +89,7 @@ surface.CreateFont("MW2022Keybinds", {
     weight = 15,
 })
 surface.CreateFont("MW2022FiremodeNotice", {
-    font = "Stratum2 BETA Medium",
+    font = "Bahnschrift SemiCondensed",
     size = 30 * MW2022HUD.Scale,
     weight = 15,
 })
