@@ -4,7 +4,7 @@ MW2022HUD.Materials.Compass = Material("iw9ui/hud_compass_location_backer.png", 
 MW2022HUD.Materials.CompassTickerMask2 = Material("mw2022/compass_tickertape_mask.png")
 MW2022HUD.Materials.CompassBacker = Material("mw2022/compass_tickertape_backing.png")
 
-MW2022HUD.Compass.CompassTickerRT = GetRenderTarget("MW5CompassTicker", 800, 40)
+MW2022HUD.Compass.CompassTickerRT = GetRenderTarget("MW5CompassTicker", 1280, 40)
 MW2022HUD.Materials.CompassTickerRT = CreateMaterial( 
     "MW5CompassTickerMat","UnlitGeneric",
     {
@@ -39,25 +39,25 @@ MW2022HUD.Compass.Draw = function()
     render.Clear(0,0,0,0,true,true)
     surface.SetMaterial(MW2022HUD.Materials.CompassBacker)
     surface.SetDrawColor(255,255,255,160)
-    surface.DrawTexturedRect(0, 0, 800, 40)
+    surface.DrawTexturedRect(0, 0, 1280, 40)
     for i=1,360 do
         surface.SetDrawColor(color_white)
-        surface.DrawRect(400 - math.floor(math.AngleDifference(dir, i) * 13.6), 37, 1, 3)
+        surface.DrawRect(640 - math.floor(math.AngleDifference(dir, i) * 13.6), 37, 1, 3)
     end
     for i=1,#CompassAngles do
         draw.DrawText(CompassAnglesText[i], CompassAngles[i] % 45 == 0 and "MW2022CompassAngles" or "MW2022CompassAnglesSmall",
-            400 - math.floor(math.AngleDifference(dir, CompassAngles[i]) * 13.6),
+            640 - math.floor(math.AngleDifference(dir, CompassAngles[i]) * 13.6),
             (6 + (CompassAngles[i] % 45 == 0 and 6 or 12)), color_white, TEXT_ALIGN_CENTER)
 
         surface.SetDrawColor(color_white)
-        surface.DrawRect(400 - math.floor(math.AngleDifference(dir, CompassAngles[i]) * MW2022HUD.Scale * 13.6),
+        surface.DrawRect(640 - math.floor(math.AngleDifference(dir, CompassAngles[i]) * MW2022HUD.Scale * 13.6),
             34, 1, 6)
     end
     render.SetWriteDepthToDestAlpha(false)
 	render.OverrideBlend(true, BLEND_SRC_COLOR, BLEND_SRC_ALPHA, BLENDFUNC_MIN)
         surface.SetDrawColor(255,255,255,255)
 		surface.SetMaterial(MW2022HUD.Materials.CompassTickerMask2)
-		surface.DrawTexturedRect(0, 0, 800, 40)
+		surface.DrawTexturedRect(0, 0, 1280, 40)
 	render.OverrideBlend(false)
     render.SetWriteDepthToDestAlpha(true)
     cam.End2D()
@@ -65,7 +65,7 @@ MW2022HUD.Compass.Draw = function()
 
     surface.SetMaterial(MW2022HUD.Materials.CompassTickerRT)
     surface.SetDrawColor(255,255,255,255)
-    surface.DrawTexturedRect(MW2022HUD.ScreenWidth * 0.5 - 400 * MW2022HUD.Scale, MW2022HUD.TopMargin, 800 * MW2022HUD.Scale, 40)
+    surface.DrawTexturedRect(MW2022HUD.ScreenWidth * 0.5 - 640 * MW2022HUD.Scale, MW2022HUD.TopMargin, 1280 * MW2022HUD.Scale, 40)
 
     surface.SetDrawColor(color_white)
     surface.SetMaterial(MW2022HUD.Materials.GradientL)
