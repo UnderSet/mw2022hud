@@ -152,7 +152,7 @@ MW2022HUD.Ammo.SetupWeaponData = function()
 end
 
 MW2022HUD.GetFiremode = function(wep)
-    local firemode, firetype, safety, ubgl = "???", 1, false, false
+    local firemode, firetype, safety, ubgl = "UNKNOWN", 1, false, false
 
     if wep.ARC9 then
         firemode = wep:GetFiremodeName()
@@ -296,7 +296,7 @@ MW2022HUD.Ammo.Draw = function()
     end
 
     if MW2022HUD.Weapon.ARC9 and MW2022HUD.Weapon:GetJammed() or MW2022HUD.Weapon.ArcCW and MW2022HUD.Weapon:GetMalfunctionJam() then
-        local reloadkey = string.upper(input.LookupBinding("+reload") or "???")
+        local reloadkey = string.upper(input.LookupBinding("+reload") or "UNKNOWN")
 
         surface.SetFont("MW2022Keybinds")
         local boxw, boxh = select(1, surface.GetTextSize(reloadkey))
