@@ -266,8 +266,8 @@ MW2022HUD.Ammo.Draw = function()
         or math.Approach(AmmoTypeNameColor.a, 0, FrameTime() * 6 * 255)
     AmmoTypeNameOutline.a = AmmoTypeTime > CurTime() and math.Approach(AmmoTypeNameOutline.a, 55, FrameTime() * 6 * 55)
         or math.Approach(AmmoTypeNameOutline.a, 0, FrameTime() * 6 * 55)
-    FiremodeNoticeColor.a = 255 * math.Clamp((FiremodeNoticeTime - CurTime()) * 4, 0, 1)
-    FiremodeNoticeOutline.a = 55 * math.Clamp((FiremodeNoticeTime - CurTime()) * 4, 0, 1)
+    FiremodeNoticeColor.a = 255 * math.Clamp((FiremodeNoticeTime - 0.5 - CurTime()) * 4, 0, 1)
+    FiremodeNoticeOutline.a = 55 * math.Clamp((FiremodeNoticeTime - 0.5 - CurTime()) * 4, 0, 1)
 
     if !MW2022HUD.WeaponIconPrerenders[MW2022HUD.WeaponData.ClassName] then
     MW2022HUD.DrawWeaponIcon(MW2022HUD.Weapon, MW2022HUD.RightMargin - 500 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 173 * MW2022HUD.Scale, 280 * MW2022HUD.Scale, 140 * MW2022HUD.Scale)
@@ -333,10 +333,23 @@ MW2022HUD.Ammo.Draw = function()
         draw.SimpleTextOutlined("RELOAD", "MW2022AmmoNotice", MW2022HUD.ScreenWidth / 2 - offsetw / 2 + 29 * MW2022HUD.Scale, MW2022HUD.ScreenHeight / 2 + 88 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
     end
 
-    if MW2022HUD.WeaponData.UBGL and MW2022HUD.Ammo.EnableFiremodeNotice:GetBool() then
-        draw.SimpleTextOutlined(string.upper("Altfire: " .. MW2022HUD.WeaponData.FireMode), "MW2022FiremodeNotice", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 95 * MW2022HUD.Scale, FiremodeNoticeColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1.5, FiremodeNoticeOutline)
-    elseif MW2022HUD.Ammo.EnableFiremodeNotice:GetBool() then
-        draw.SimpleTextOutlined(string.upper("Fire Type: " .. MW2022HUD.WeaponData.FireMode), "MW2022FiremodeNotice", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 95 * MW2022HUD.Scale, FiremodeNoticeColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1.5, FiremodeNoticeOutline)
+    if MW2022HUD.Ammo.EnableFiremodeNotice:GetBool() and FiremodeNoticeTime > CurTime() then
+        local FiremodeColor = Color(255,255,255)
+        FiremodeColor = FiremodeColor:Lerp(Color(212,153,59), -math.sin(math.Clamp(-(FiremodeNoticeTime - (5/3) - CurTime()) * math.pi * 15, 0, math.pi * 6)))
+        FiremodeColor.a = FiremodeNoticeColor.a
+        local FireTypeString = string.upper(MW2022HUD.WeaponData.UBGL and "Altfire: " or "Fire Type: ")
+        local Firemode = string.upper(MW2022HUD.WeaponData.FireMode)
+
+        surface.SetFont("MW2022FiremodeNotice")
+        local w1, _ = surface.GetTextSize(FireTypeString)
+        local w2, _ = surface.GetTextSize(Firemode)
+        local totalw = w1 + w2
+        draw.SimpleTextOutlined(FireTypeString, "MW2022FiremodeNotice", MW2022HUD.ScreenWidth / 2 - totalw / 2, MW2022HUD.ScreenHeight / 2 + 95 * MW2022HUD.Scale, FiremodeNoticeColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, FiremodeNoticeOutline)
+        draw.SimpleTextOutlined(Firemode, "MW2022FiremodeNotice", MW2022HUD.ScreenWidth / 2 - totalw / 2 + w1, MW2022HUD.ScreenHeight / 2 + 95 * MW2022HUD.Scale, FiremodeColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, FiremodeNoticeOutline)
+
+        local barlength = w2 * math.Clamp(-(FiremodeNoticeTime - (5/3) - CurTime()) * 15, 0, 1)
+        surface.SetDrawColor(FiremodeNoticeColor)
+        surface.DrawRect(MW2022HUD.ScreenWidth / 2 + totalw / 2 - barlength, MW2022HUD.ScreenHeight / 2 + 108 * MW2022HUD.Scale + 20 * MW2022HUD.Scale, barlength, 2 * MW2022HUD.Scale)
     end
     
     surface.SetDrawColor(color_white)
