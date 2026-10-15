@@ -10,6 +10,7 @@ AddCSLuaFile("mw2022hud/killfeed.lua")
 AddCSLuaFile("mw2022hud/minimap.lua")
 -- AddCSLuaFile("mw2022hud/callingcards.lua")
 AddCSLuaFile("mw2022hud/drawsystem.lua")
+AddCSLuaFile("mw2022hud/spawnmenu.lua")
 
 if file.Exists("lua/mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() .. ".lua", "GAME") then
     AddCSLuaFile("mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() .. ".lua")

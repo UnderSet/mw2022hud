@@ -53,6 +53,7 @@ include("mw2022hud/killfeed.lua")
 include("mw2022hud/minimap.lua")
 -- include("mw2022hud/callingcards.lua")
 include("mw2022hud/drawsystem.lua")
+include("mw2022hud/spawnmenu.lua")
 
 for _, v in ipairs(file.Find("mw2022hud/AddonIntegrations/*.lua", "LUA")) do
     include("mw2022hud/AddonIntegrations/" .. v)
