@@ -1,3 +1,6 @@
+-- warning: this damn file has stupidly long lines since you can't split strings across multiple lines, I have warned you
+-- please enable Word Wrap in your editor at least while editing this file
+
 hook.Add("PopulateToolMenu", "MW2022HUD_SpawnMenu", function()
     spawnmenu.AddToolMenuOption("Options", "MWII HUD", "MW2022HUD_Settings", "Settings", "", "", function(panel)
         panel:CheckBox("Enable HUD", "MW2022HUD_Enable")
@@ -16,7 +19,8 @@ hook.Add("PopulateToolMenu", "MW2022HUD_SpawnMenu", function()
         health:AddChoice("Disabled", 0)
         health:AddChoice("Full (incl. squad behavior)", 1)
         health:AddChoice("My armor only", 2) -- this option is slightly broken at the moment, I'll fix that behavior (mark my words)
-        panel:ControlHelp("Enable health and armor display.\n- This element is based off of Warzone 2.0/DMZ, not Ground War/Co-Op (Spec Ops/RAID)/Campaign and will not match those gamemodes.")
+        panel:ControlHelp("Enable health and armor display.\n- This element is based off of Warzone 2.0/DMZ, not Ground War/Co-Op (Spec Ops/RAID)/Campaign and will not match those gamemodes.\n- WARNING: Squad behavior falls back to ALL PLAYERS ON SERVER if no squad is passed to the HUD by an addon or gamemode. This can be very laggy.")
+        -- on that note: I need a better fallback than "hmm yes everyone on the server is my ally" (and/or for server to override and say "no you're alone")
 
         local score = panel:ComboBox("Score Display", "MW2022HUD_EnableScore")
         score:AddChoice("Disabled", 0)
