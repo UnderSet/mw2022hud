@@ -15,6 +15,9 @@ hook.Add("PopulateToolMenu", "MW2022HUD_SpawnMenu", function()
         panel:CheckBox("Minimap Rotation", "MW2022HUD_EnableMinimapRotation")
         panel:ControlHelp("Allow the minimap to rotate instead of being locked to North.") -- is it really North locked?
 
+        panel:CheckBox("Firemode Notice", "MW2022HUD_EnableAmmoFiremodeNotice")
+        panel:ControlHelp("Display a brief popup notice when changing firemodes or weapons. This may be distracting.")
+
         local health = panel:ComboBox("Health/Armor", "MW2022HUD_EnableHealth")
         health:AddChoice("Disabled", 0)
         health:AddChoice("Full (incl. squad behavior)", 1)
@@ -28,9 +31,6 @@ hook.Add("PopulateToolMenu", "MW2022HUD_SpawnMenu", function()
         score:AddChoice("Enabled (While Active)", 2)
         panel:ControlHelp("Enable score display. Requires active support from other addons or gamemodes.\n- \"Always\" will show gamemode icon and name at all times.\n- \"While Active\" will only display when an addon or gamemode is actively trying to display scores through this HUD.")
         -- note to fellow addon makers peeking here: integration with Beatrun is included as a template! copy and hack that away if you wish to make your addon supported!
-
-        panel:CheckBox("Firemode Notice", "MW2022HUD_EnableAmmoFiremodeNotice")
-        panel:ControlHelp("Display a brief popup notice when changing firemodes. This may be distracting.")
 
         panel:NumSlider("Horizontal Bounds", "MW2022HUD_XBounds", 0, 100, 0)
         panel:NumSlider("Vertical Bounds", "MW2022HUD_YBounds", 0, 100, 0)
