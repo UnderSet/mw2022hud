@@ -21,6 +21,8 @@ local plyColorHSVCache = {}
 local localPlyNum = 1
 
 MW2022HUD.Vitals.Draw = function()
+    -- warning to anyone who wishes to dip their toes here: this element is extremely laggy and messy, I have warned you
+    -- (no but seriously what the fuck is this messy code? I barely know what I'm even fucking doing)
     local ply = LocalPlayer()
 
     if MW2022HUD.EnableHealth:GetBool() then
@@ -32,12 +34,14 @@ MW2022HUD.Vitals.Draw = function()
             local barlen = (v == ply and 165 or 127) * MW2022HUD.Scale
             local armorw = (v == ply and 165 or 125) * MW2022HUD.Scale -- ...blame Infinity Ward...yep, it's slightly different lengths...
             if v == ply then
+                -- extremely crude, but AFAIK there isn't really a way to do basically reverse key-value lookup (lmao)
+                -- pls forgive this heresy
                 localPlyNum = k
                 -- continue
             else
                 plyRenderNum = plyRenderNum + 1
             end
-            if MW2022HUD.EnableHealth:GetBool() then
+            if MW2022HUD.EnableHealth:GetInt() != 2 then
                 if !plyColorCache[v] then
                     plyColorCache[v] = v:GetPlayerColor():ToColor()
                     plyColorHSVCache[v] = {plyColorCache[v]:ToHSV()}
@@ -58,21 +62,23 @@ MW2022HUD.Vitals.Draw = function()
                 surface.DrawRect(MW2022HUD.LeftMargin + 64 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - 55 * MW2022HUD.Scale,
                     barlen * math.min(v:Health() / v:GetMaxHealth(), 1), 3 * MW2022HUD.Scale)
 
-                render.SetScissorRect(MW2022HUD.LeftMargin + 64 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - 72 * MW2022HUD.Scale,
-                    MW2022HUD.LeftMargin + 64 * MW2022HUD.Scale + armorw * math.min(v:Armor() / v:GetMaxArmor(), 1), MW2022HUD.BottomMargin - vertshift - 52 * MW2022HUD.Scale, true)
-                surface.SetMaterial(MW2022HUD.Materials.ArmorBar)
-                surface.SetDrawColor(ArmorBlue)
-                surface.DrawTexturedRect(MW2022HUD.LeftMargin + 65 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - 70 * MW2022HUD.Scale,
-                    armorw, 15 * MW2022HUD.Scale)
-                render.SetScissorRect(0,0,0,0,false)
-                surface.SetMaterial(MW2022HUD.Materials.ArmorOutline)
-                surface.SetDrawColor(color_white)
-                surface.DrawTexturedRect(MW2022HUD.LeftMargin + 65 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - (v == ply and 72 or 70) * MW2022HUD.Scale,
-                    armorw, (v == ply and 20 or 15) * MW2022HUD.Scale)
-
                 draw.SimpleTextOutlined("$0", "MW2022AmmoSmall", MW2022HUD.LeftMargin + (v == ply and 239 or 199) * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - 72 * MW2022HUD.Scale,
                     color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
             end
+
+            render.SetScissorRect(MW2022HUD.LeftMargin + 64 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - 72 * MW2022HUD.Scale,
+                MW2022HUD.LeftMargin + 64 * MW2022HUD.Scale + armorw * math.min(v:Armor() / v:GetMaxArmor(), 1), MW2022HUD.BottomMargin - vertshift - 52 * MW2022HUD.Scale, true)
+            surface.SetMaterial(MW2022HUD.Materials.ArmorBar)
+            surface.SetDrawColor(ArmorBlue)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 65 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - 70 * MW2022HUD.Scale,
+                armorw, 15 * MW2022HUD.Scale)
+            render.SetScissorRect(0,0,0,0,false)
+            surface.SetMaterial(MW2022HUD.Materials.ArmorOutline)
+            surface.SetDrawColor(color_white)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 65 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - (v == ply and 72 or 70) * MW2022HUD.Scale,
+                armorw, (v == ply and 20 or 15) * MW2022HUD.Scale)
+
+            if v == ply and MW2022HUD.EnableHealth:GetInt() == 2 then break end
         end
 
         if ply.GetArmorPlates or GetConVar("wz_armorsys_armorplates_maxcarry") and ply:GetAmmoCount("WZ_ARMORPLATE") then
