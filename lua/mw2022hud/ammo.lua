@@ -1,9 +1,10 @@
 MW2022HUD.Ammo = {}
 MW2022HUD.Weapon = nil
 MW2022HUD.LastWeapon = nil
-MW2022HUD.LastUBState = false
-MW2022HUD.LastFiremode = "AUTO"
-MW2022HUD.WeaponData = {}
+
+local lastUBState = false
+local lastFiremode = "AUTO"
+local weaponData = {}
 
 local OutlineBlack = Color(66,66,66,55)
 local BackgroundBlack = Color(29,29,29,207)
@@ -77,113 +78,44 @@ MW2022HUD.Ammo.Tacticals.Material = nil
 
 MW2022HUD.Ammo.EnableFiremodeNotice = CreateClientConVar("MW2022HUD_EnableAmmoFiremodeNotice", 1, true, true, "Enable the firemode notice text whenever you switch weapons or firemodes.", 0, 1)
 
-MW2022HUD.Ammo.ARC9TriviaCaliberKeys = {} -- see GetARC9Caliber(); also these are not keys as in keyboard keys but rather table keys
-
-local function GetARC9Caliber(wep)
-    -- basically? this is a GIANT HEURISTIC to find calibers.
-    -- only works properly for English, obviously, as trivia is fully customizable in ARC9...
-    
-    -- if you don't play GMod in English...I'm sorry...
-
-    -- uncomment the print() calls here if you'd like to see how this works behind the scenes
-
-    if MW2022HUD.Ammo.ARC9TriviaCaliberKeys[MW2022HUD.WeaponData.ClassName] then
-        -- print("CACHED KEY: " .. MW2022HUD.Ammo.ARC9TriviaCaliberKeys[MW2022HUD.WeaponData.ClassName])
-        -- print("- WEAPON: " .. MW2022HUD.WeaponData.ClassName)
-
-        -- I'm...aware this looks disastrous...deranged even...
-        return (ARC9:GetPhrase(wep.Trivia[MW2022HUD.Ammo.ARC9TriviaCaliberKeys[MW2022HUD.WeaponData.ClassName]])
-            or wep.Trivia[MW2022HUD.Ammo.ARC9TriviaCaliberKeys[MW2022HUD.WeaponData.ClassName]])
-    end
-
-    -- print(" ")
-    for k,v in pairs(wep.Trivia) do
-        -- print(k)
-        local TriviaKey = ARC9:GetPhrase(string.sub(k, 0, #k-1)) or string.sub(k, 0, #k-1)
-        local TriviaKeyAlt = ARC9:GetPhrase(k) or k
-        -- print(TriviaKey)
-        if string.match(TriviaKey, "Caliber") or string.match(TriviaKey, "Calibre") then
-            -- print(ARC9:GetPhrase(wep.Trivia[k]) or wep.Trivia[k])
-            MW2022HUD.Ammo.ARC9TriviaCaliberKeys[MW2022HUD.WeaponData.ClassName] = k
-            return (ARC9:GetPhrase(wep.Trivia[k]) or wep.Trivia[k])
-        end
-
-        if string.match(TriviaKeyAlt, "Caliber") or string.match(TriviaKeyAlt, "Calibre") then
-            -- print(ARC9:GetPhrase(wep.Trivia[k]) or wep.Trivia[k])
-            MW2022HUD.Ammo.ARC9TriviaCaliberKeys[MW2022HUD.WeaponData.ClassName] = k
-            return (ARC9:GetPhrase(wep.Trivia[k]) or wep.Trivia[k])
-        end
-    end
-end
-
 MW2022HUD.Ammo.SetupWeaponData = function()
     local ply = LocalPlayer()
     MW2022HUD.Weapon = ply:GetActiveWeapon()
     if !IsValid(MW2022HUD.Weapon) then return end
 
-    MW2022HUD.WeaponData.ClassName = MW2022HUD.Weapon:GetClass()
+    weaponData.ClassName = MW2022HUD.Weapon:GetClass()
 
-    MW2022HUD.WeaponData.CurrentMag = math.max(MW2022HUD.Weapon:Clip1(), 0)
-    MW2022HUD.WeaponData.CurrentMagAlt = math.max(MW2022HUD.Weapon:Clip2(), 0)
-    MW2022HUD.WeaponData.MaxMag = MW2022HUD.Weapon:GetMaxClip1()
-    MW2022HUD.WeaponData.MaxMagAlt = MW2022HUD.Weapon:GetMaxClip2()
+    weaponData.CurrentMag = math.max(MW2022HUD.Weapon:Clip1(), 0)
+    weaponData.CurrentMagAlt = math.max(MW2022HUD.Weapon:Clip2(), 0)
+    weaponData.MaxMag = MW2022HUD.Weapon:GetMaxClip1()
+    weaponData.MaxMagAlt = MW2022HUD.Weapon:GetMaxClip2()
 
-    MW2022HUD.WeaponData.AmmoType = MW2022HUD.Weapon:GetPrimaryAmmoType()
-    MW2022HUD.WeaponData.AmmoTypeAlt = MW2022HUD.Weapon:GetSecondaryAmmoType()
+    weaponData.AmmoType = MW2022HUD.Weapon:GetPrimaryAmmoType()
+    weaponData.AmmoTypeAlt = MW2022HUD.Weapon:GetSecondaryAmmoType()
 
-    MW2022HUD.WeaponData.AmmoTypeName = MW2022HUD.Weapon.ArcCW and (MW2022HUD.Weapon:GetBuff_Override("Override_Trivia_Calibre") or MW2022HUD.Weapon.Trivia_Calibre)
-        or MW2022HUD.Weapon.ARC9 and GetARC9Caliber(MW2022HUD.Weapon) -- ARC9 caliber reading is very hacky heuristics driven and only works in English, unfortunately
-        or language.GetPhrase(game.GetAmmoName(MW2022HUD.WeaponData.AmmoType) or "Melee/Tool")
-    MW2022HUD.WeaponData.AmmoTypeAltName = language.GetPhrase(game.GetAmmoName(MW2022HUD.WeaponData.AmmoTypeAlt) or "Melee/Tool")
+    weaponData.AmmoTypeName = MW2022HUD.WeaponExtensions.GetCaliber(MW2022HUD.Weapon) or language.GetPhrase(game.GetAmmoName(weaponData.AmmoType) or "Melee/Tool")
+    weaponData.AmmoTypeAltName = language.GetPhrase(game.GetAmmoName(weaponData.AmmoTypeAlt) or "Melee/Tool")
 
-    MW2022HUD.WeaponData.Reserve = ply:GetAmmoCount(MW2022HUD.WeaponData.AmmoType)
-    MW2022HUD.WeaponData.ReserveAlt = ply:GetAmmoCount(MW2022HUD.WeaponData.AmmoTypeAlt)
+    weaponData.Reserve = ply:GetAmmoCount(weaponData.AmmoType)
+    weaponData.ReserveAlt = ply:GetAmmoCount(weaponData.AmmoTypeAlt)
 
-    MW2022HUD.WeaponData.TotalAmmo = MW2022HUD.WeaponData.CurrentMag + MW2022HUD.WeaponData.Reserve
-    MW2022HUD.WeaponData.TotalAmmoAlt = MW2022HUD.WeaponData.CurrentMagAlt + MW2022HUD.WeaponData.ReserveAlt
+    weaponData.TotalAmmo = weaponData.CurrentMag + weaponData.Reserve
+    weaponData.TotalAmmoAlt = weaponData.CurrentMagAlt + weaponData.ReserveAlt
 
-    MW2022HUD.WeaponData.FireMode, MW2022HUD.WeaponData.FireType, MW2022HUD.WeaponData.Safety, MW2022HUD.WeaponData.UBGL = MW2022HUD.GetFiremode(MW2022HUD.Weapon)
+    MW2022HUD.WeaponExtensions.GetWeaponBase(MW2022HUD.Weapon)
+
+    weaponData.FireModeSupport, weaponData.FireMode, weaponData.FireType, weaponData.Safety, weaponData.UBGL = MW2022HUD.WeaponExtensions.GetFiremode(MW2022HUD.Weapon)
 
     -- Swap values around if we're using underbarrel
-    if !MW2022HUD.WeaponData.UBGL then return end
-    MW2022HUD.WeaponData.CurrentMag, MW2022HUD.WeaponData.CurrentMagAlt = MW2022HUD.WeaponData.CurrentMagAlt, MW2022HUD.WeaponData.CurrentMag
-    MW2022HUD.WeaponData.MaxMag, MW2022HUD.WeaponData.MaxMagAlt = MW2022HUD.WeaponData.MaxMagAlt, MW2022HUD.WeaponData.MaxMag
-    MW2022HUD.WeaponData.Reserve, MW2022HUD.WeaponData.ReserveAlt = MW2022HUD.WeaponData.ReserveAlt, MW2022HUD.WeaponData.Reserve
-end
-
-MW2022HUD.GetFiremode = function(wep)
-    local firemode, firetype, safety, ubgl = "UNKNOWN", 1, false, false
-
-    if wep.ARC9 then
-        firemode = wep:GetFiremodeName()
-        safety = wep:GetSafe()
-        ubgl = wep:GetUBGL()
-
-        -- behold the insanity
-        firetype = wep:GetCurrentFiremodeTable().Mode
-        firetype = safety and 5 or firetype < 0 and 4 or firetype > 1 and math.min(firetype, 3) or 1
-    elseif wep.ArcCW then
-        firemode = wep:GetFiremodeName()
-        safety = wep:GetCurrentFiremode().Mode == 0 and true or false
-        ubgl = wep:GetInUBGL()
-
-        firetype = wep:GetCurrentFiremode().Mode
-        firetype = firetype == 0 and 5 or firetype == 1 and 1 or firetype >= 2 and 4 or firetype < 0 and math.Clamp(math.abs(firetype), 2, 3)
-    elseif weapons.IsBasedOn(wep:GetClass(), "mg_base") then
-        safety = wep:HasFlag("Lowered")
-        ubgl = wep:HasFlag("UsingUnderbarrel")
-        firemode = safety and "LOWERED" or ubgl and (wep:GetUnderbarrel() != nil and wep:GetUnderbarrel().Name or "Altfire")
-            or string.upper(wep.Firemodes[wep:GetFiremode()].Name)
-
-        firetype = safety and 5 or wep.Primary.Automatic and 4 or wep.Primary.BurstRounds > 1 and math.Clamp(wep.Primary.BurstRounds, 2, 3) or 1
-    end
-
-    return firemode, firetype, safety, ubgl
+    if !weaponData.UBGL then return end
+    weaponData.CurrentMag, weaponData.CurrentMagAlt = weaponData.CurrentMagAlt, weaponData.CurrentMag
+    weaponData.MaxMag, weaponData.MaxMagAlt = weaponData.MaxMagAlt, weaponData.MaxMag
+    weaponData.Reserve, weaponData.ReserveAlt = weaponData.ReserveAlt, weaponData.Reserve
 end
 
 MW2022HUD.DrawWeaponIcon = function(wep, x, y, w, h)
     local offx, offy, sclw, sclh = 0, 0, MW2022HUD.WeaponIconRTWidth, MW2022HUD.WeaponIconRTHeight
-    local class = MW2022HUD.WeaponData.ClassName
+    local class = weaponData.ClassName
     if MW2022HUD.WeaponIconOffsets[class] and !MW2022HUD.Debug.DisableWeaponIconScaling:GetBool() then
         local scalemod = MW2022HUD.WeaponIconOffsets[class][3]
         offx = MW2022HUD.WeaponIconOffsets[class][1] * MW2022HUD.Scale + (sclw / 2 * (1 - scalemod))
@@ -243,19 +175,19 @@ MW2022HUD.Ammo.Draw = function()
         AmmoTypeTime = CurTime() + (5/3)
         FiremodeNoticeTime = CurTime() + (5/3)
         MW2022HUD.LastWeapon = MW2022HUD.Weapon
-        MW2022HUD.LastUBState = MW2022HUD.WeaponData.UBGL
+        MW2022HUD.LastUBState = weaponData.UBGL
         WeaponNameColor.a = 0
         WeaponNameOutline.a = 0
         AmmoTypeNameColor.a = 0
         AmmoTypeNameOutline.a = 0
-    elseif MW2022HUD.LastUBState != MW2022HUD.WeaponData.UBGL then
+    elseif MW2022HUD.LastUBState != weaponData.UBGL then
         AmmoTypeTime = CurTime() + (5/3)
-        MW2022HUD.LastUBState = MW2022HUD.WeaponData.UBGL
+        MW2022HUD.LastUBState = weaponData.UBGL
         AmmoTypeNameColor.a = 255
         AmmoTypeNameOutline.a = 55
-    elseif MW2022HUD.LastFiremode != MW2022HUD.WeaponData.FireMode then
+    elseif MW2022HUD.LastFiremode != weaponData.FireMode then
         FiremodeNoticeTime = CurTime() + (5/3)
-        MW2022HUD.LastFiremode = MW2022HUD.WeaponData.FireMode
+        MW2022HUD.LastFiremode = weaponData.FireMode
     end
 
     WeaponNameColor.a = WeaponNameTime > CurTime() and math.Approach(WeaponNameColor.a, 255, FrameTime() * 6 * 255)
@@ -269,33 +201,33 @@ MW2022HUD.Ammo.Draw = function()
     FiremodeNoticeColor.a = 255 * math.Clamp((FiremodeNoticeTime - 0.5 - CurTime()) * 4, 0, 1)
     FiremodeNoticeOutline.a = 55 * math.Clamp((FiremodeNoticeTime - 0.5 - CurTime()) * 4, 0, 1)
 
-    if !MW2022HUD.WeaponIconPrerenders[MW2022HUD.WeaponData.ClassName] then
+    if !MW2022HUD.WeaponIconPrerenders[weaponData.ClassName] then
     MW2022HUD.DrawWeaponIcon(MW2022HUD.Weapon, MW2022HUD.RightMargin - 500 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 173 * MW2022HUD.Scale, 280 * MW2022HUD.Scale, 140 * MW2022HUD.Scale)
     else
-        surface.SetMaterial(MW2022HUD.WeaponIconPrerenders[MW2022HUD.WeaponData.ClassName])
+        surface.SetMaterial(MW2022HUD.WeaponIconPrerenders[weaponData.ClassName])
         surface.SetDrawColor(color_white)
         surface.DrawTexturedRect(MW2022HUD.RightMargin - 500 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 173 * MW2022HUD.Scale, 280 * MW2022HUD.Scale, 140 * MW2022HUD.Scale)
     end
     -- surface.DrawOutlinedRect(MW2022HUD.RightMargin - 500 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 173 * MW2022HUD.Scale, 280 * MW2022HUD.Scale, 140 * MW2022HUD.Scale)
 
     draw.SimpleTextOutlined(MW2022HUD.Weapon:GetPrintName(), "MW2022AmmoSmall", MW2022HUD.RightMargin - 400 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 181 * MW2022HUD.Scale, WeaponNameColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, WeaponNameOutline)
-    draw.SimpleTextOutlined(MW2022HUD.WeaponData.UBGL and MW2022HUD.WeaponData.AmmoTypeAltName or MW2022HUD.WeaponData.AmmoTypeName, "MW2022AmmoType", MW2022HUD.RightMargin - 402 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 161 * MW2022HUD.Scale,
+    draw.SimpleTextOutlined(weaponData.UBGL and weaponData.AmmoTypeAltName or weaponData.AmmoTypeName, "MW2022AmmoType", MW2022HUD.RightMargin - 402 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 161 * MW2022HUD.Scale,
         AmmoTypeNameColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, AmmoTypeNameOutline)
 
-    if MW2022HUD.WeaponData.AmmoType == -1 then return end
+    if weaponData.AmmoType == -1 then return end
 
-    if MW2022HUD.WeaponData.MaxMag == -1 then
-        draw.SimpleTextOutlined(MW2022HUD.WeaponData.UBGL and MW2022HUD.WeaponData.TotalAmmoAlt or MW2022HUD.WeaponData.TotalAmmo, "MW2022AmmoLarge", MW2022HUD.RightMargin - 160 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 131 * MW2022HUD.Scale,
-            MW2022HUD.WeaponData.CurrentMag >= MW2022HUD.WeaponData.MaxMag * 0.3 and color_white or LowRed, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    if weaponData.MaxMag == -1 then
+        draw.SimpleTextOutlined(weaponData.UBGL and weaponData.TotalAmmoAlt or weaponData.TotalAmmo, "MW2022AmmoLarge", MW2022HUD.RightMargin - 160 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 131 * MW2022HUD.Scale,
+            weaponData.CurrentMag >= weaponData.MaxMag * 0.3 and color_white or LowRed, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
     else
         -- CoD seems to use some kind of TTK based detection for low ammo threshold or something? Waaaaay out of scope of what I can do though...
-        draw.SimpleTextOutlined(MW2022HUD.WeaponData.CurrentMag, "MW2022AmmoLarge", MW2022HUD.RightMargin - 160 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 131 * MW2022HUD.Scale,
-            MW2022HUD.WeaponData.CurrentMag >= MW2022HUD.WeaponData.MaxMag * 0.3 and color_white or LowRed, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-        draw.SimpleTextOutlined(MW2022HUD.WeaponData.Reserve, "MW2022AmmoSmall", MW2022HUD.RightMargin - 160 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 91 * MW2022HUD.Scale,
-            MW2022HUD.WeaponData.Reserve > 0 and ReserveGray or LowRed, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+        draw.SimpleTextOutlined(weaponData.CurrentMag, "MW2022AmmoLarge", MW2022HUD.RightMargin - 160 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 131 * MW2022HUD.Scale,
+            weaponData.CurrentMag >= weaponData.MaxMag * 0.3 and color_white or LowRed, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+        draw.SimpleTextOutlined(weaponData.Reserve, "MW2022AmmoSmall", MW2022HUD.RightMargin - 160 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 91 * MW2022HUD.Scale,
+            weaponData.Reserve > 0 and ReserveGray or LowRed, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
     end
 
-    if MW2022HUD.Weapon.ARC9 and MW2022HUD.Weapon:GetJammed() or MW2022HUD.Weapon.ArcCW and MW2022HUD.Weapon:GetMalfunctionJam() then
+    if MW2022HUD.WeaponExtensions.GetMalfunctioning(MW2022HUD.Weapon) then
         local reloadkey = string.upper(input.LookupBinding("+reload") or "UNKNOWN")
 
         surface.SetFont("MW2022Keybinds")
@@ -311,11 +243,11 @@ MW2022HUD.Ammo.Draw = function()
         draw.SimpleText(reloadkey, "MW2022Keybinds", MW2022HUD.ScreenWidth / 2 - offsetw / 2 + 5 * MW2022HUD.Scale, MW2022HUD.ScreenHeight / 2 + 91 * MW2022HUD.Scale, color_black, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
         draw.SimpleTextOutlined("CLEAR MALFUNCTION", "MW2022AmmoNotice", MW2022HUD.ScreenWidth / 2 - offsetw / 2 + 29 * MW2022HUD.Scale, MW2022HUD.ScreenHeight / 2 + 88 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-    elseif MW2022HUD.WeaponData.CurrentMag + MW2022HUD.WeaponData.Reserve <= 0 then
+    elseif weaponData.CurrentMag + weaponData.Reserve <= 0 then
         draw.SimpleTextOutlined("NO AMMO", "MW2022AmmoNotice", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 90 * MW2022HUD.Scale, LowRed, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-    elseif MW2022HUD.WeaponData.CurrentMag < MW2022HUD.WeaponData.MaxMag * 0.3 and MW2022HUD.WeaponData.Reserve <= 0 then
+    elseif weaponData.CurrentMag < weaponData.MaxMag * 0.3 and weaponData.Reserve <= 0 then
         draw.SimpleTextOutlined("LOW AMMO", "MW2022AmmoNotice", MW2022HUD.ScreenWidth / 2, MW2022HUD.ScreenHeight / 2 + 90 * MW2022HUD.Scale, LowYellow, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-    elseif MW2022HUD.WeaponData.CurrentMag < MW2022HUD.WeaponData.MaxMag * 0.3 then
+    elseif weaponData.CurrentMag < weaponData.MaxMag * 0.3 then
         local reloadkey = string.upper(input.LookupBinding("+reload") or "???")
 
         surface.SetFont("MW2022Keybinds")
@@ -333,12 +265,14 @@ MW2022HUD.Ammo.Draw = function()
         draw.SimpleTextOutlined("RELOAD", "MW2022AmmoNotice", MW2022HUD.ScreenWidth / 2 - offsetw / 2 + 29 * MW2022HUD.Scale, MW2022HUD.ScreenHeight / 2 + 88 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
     end
 
+    if !weaponData.FireModeSupport then return end
+
     if MW2022HUD.Ammo.EnableFiremodeNotice:GetBool() and FiremodeNoticeTime > CurTime() then
         local FiremodeColor = Color(255,255,255)
         FiremodeColor = FiremodeColor:Lerp(Color(212,153,59), -math.sin(math.Clamp(-(FiremodeNoticeTime - (5/3) - CurTime()) * math.pi * 15, 0, math.pi * 6)))
         FiremodeColor.a = FiremodeNoticeColor.a
-        local FireTypeString = string.upper(MW2022HUD.WeaponData.UBGL and "Altfire: " or "Fire Type: ")
-        local Firemode = string.upper(MW2022HUD.WeaponData.FireMode)
+        local FireTypeString = string.upper(weaponData.UBGL and "Altfire: " or "Fire Type: ")
+        local Firemode = string.upper(weaponData.FireMode)
 
         surface.SetFont("MW2022FiremodeNotice")
         local w1, _ = surface.GetTextSize(FireTypeString)
@@ -353,10 +287,10 @@ MW2022HUD.Ammo.Draw = function()
     end
     
     surface.SetDrawColor(color_white)
-    surface.SetMaterial(MW2022HUD.Materials.FireGroups[MW2022HUD.WeaponData.FireType][1])
+    surface.SetMaterial(MW2022HUD.Materials.FireGroups[weaponData.FireType][1])
     surface.DrawTexturedRect(MW2022HUD.RightMargin - 287 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 66 * MW2022HUD.Scale, 30 * MW2022HUD.Scale, 30 * MW2022HUD.Scale)
     
-    if MW2022HUD.WeaponData.AmmoTypeAlt != -1 then
+    if weaponData.AmmoTypeAlt != -1 then
         surface.SetDrawColor(color_white)
         surface.SetMaterial(MW2022HUD.Materials.FireGroups[1][1])
         surface.DrawTexturedRect(MW2022HUD.RightMargin - 326 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 66 * MW2022HUD.Scale, 30 * MW2022HUD.Scale, 30 * MW2022HUD.Scale)
@@ -364,19 +298,19 @@ MW2022HUD.Ammo.Draw = function()
         surface.DrawRect(MW2022HUD.RightMargin - 294 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 66 * MW2022HUD.Scale, 1 * MW2022HUD.Scale, 30 * MW2022HUD.Scale)
     end
 
-    if MW2022HUD.WeaponData.UBGL then
+    if weaponData.UBGL then
         draw.NoTexture()
         surface.DrawRect(MW2022HUD.RightMargin - 325 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 36 * MW2022HUD.Scale, 26 * MW2022HUD.Scale, 2 * MW2022HUD.Scale)
 
-        draw.SimpleTextOutlined(MW2022HUD.WeaponData.FireMode, "MW2022AmmoSmall", MW2022HUD.RightMargin - 335 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 62 * MW2022HUD.Scale, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+        draw.SimpleTextOutlined(weaponData.FireMode, "MW2022AmmoSmall", MW2022HUD.RightMargin - 335 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 62 * MW2022HUD.Scale, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
     else
         draw.NoTexture()
         surface.DrawRect(MW2022HUD.RightMargin - 287 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 36 * MW2022HUD.Scale, 26 * MW2022HUD.Scale, 2 * MW2022HUD.Scale)
         
-        draw.SimpleTextOutlined(MW2022HUD.WeaponData.FireMode, "MW2022AmmoSmall", MW2022HUD.RightMargin - 249 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 62 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+        draw.SimpleTextOutlined(weaponData.FireMode, "MW2022AmmoSmall", MW2022HUD.RightMargin - 249 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 62 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
 
-        if MW2022HUD.WeaponData.AmmoTypeAlt != -1 then
-            draw.SimpleTextOutlined(MW2022HUD.WeaponData.TotalAmmoAlt, "MW2022AmmoSmall", MW2022HUD.RightMargin - 335 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 62 * MW2022HUD.Scale, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+        if weaponData.AmmoTypeAlt != -1 then
+            draw.SimpleTextOutlined(weaponData.TotalAmmoAlt, "MW2022AmmoSmall", MW2022HUD.RightMargin - 335 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 62 * MW2022HUD.Scale, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
         end
     end
 end
