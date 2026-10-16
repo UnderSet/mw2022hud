@@ -8,23 +8,35 @@ local extendedDataHandlers = extendedDataHandlers or {}
 local wepBase = {} -- which base a weapon is can be cached as it can't change at runtime (...or can it? (pls no))
 
 MW2022HUD.WeaponExtensions.GetWeaponBase = function(wep)
-    if wepBase[wep:GetClass()] then
-        -- print("[MWIIHUD DEBUG] Cache hit! - Weapon: " .. wep:GetClass() .. " - base: " .. wepBase[wep:GetClass()])
+    if wepBase[wep:GetClass()] != nil then
+        -- print("[MWIIHUD DEBUG] Cache hit! - " .. wep:GetClass() .. " on " .. tostring(wepBase[wep:GetClass()]))
         return wepBase[wep:GetClass()]
     end
 
+    -- print("[MWIIHUD DEBUG] Cache missed for " .. wep:GetClass() .. ", checking bases...")
     for k,v in pairs(isBaseChecks) do
+        -- print("[MWIIHUD DEBUG] Checking this weapon for base: " .. k)
         if v(wep) then
             wepBase[wep:GetClass()] = k
-            -- print("[MWIIHUD DEBUG] Cache miss - Weapon: " .. wep:GetClass() .. " - base: " .. k)
-            break
+            -- print("[MWIIHUD DEBUG] Found base for weapon - " .. wep:GetClass() .. " on " .. k)
+            return k
         end
     end
+
+    -- print("[MWIIHUD DEBUG] No matching base...")
+    -- if we've gotten here there's no base matching, so...
+    wepBase[wep:GetClass()] = false
 end
 
 MW2022HUD.WeaponExtensions.AddHandler = function(basename, isBaseCheck, extendedDataHandler)
     isBaseChecks[basename] = isBaseCheck
     extendedDataHandlers[basename] = extendedDataHandler
+end
+
+-- used in development through lua_run_cl
+-- GetWeaponBase will fallback and save to cache the fallback if the base extensions aren't loaded...
+MW2022HUD.WeaponExtensions.ResetWeaponBaseCache = function()
+    wepBase = {}
 end
 
 -- all of the following functions are essentially thin wrappers to prevent you from accidentally calling a nonexistent
