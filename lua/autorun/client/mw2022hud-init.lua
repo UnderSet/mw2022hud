@@ -65,4 +65,7 @@ print("[MWIIHUD] HUD initialization complete ------------------------")
 cvars.AddChangeCallback("MW2022HUD_XBounds", MW2022HUD.SetupBounds)
 cvars.AddChangeCallback("MW2022HUD_YBounds", MW2022HUD.SetupBounds)
 
-hook.Add("OnScreenSizeChanged", "MW2022HUDScreenSizeChanged", MW2022HUD.SetupBounds)
+hook.Add("OnScreenSizeChanged", "MW2022HUDScreenSizeChanged", function()
+    MW2022HUD.SetupBounds()
+    include("mw2022hud/fonts.lua")
+end)
