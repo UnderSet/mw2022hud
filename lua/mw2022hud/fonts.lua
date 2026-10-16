@@ -5,12 +5,12 @@ surface.CreateFont("MW2022CompassText", {
 })
 surface.CreateFont("MW2022CompassAngles", {
     font = "Stratum2 BETA Medium",
-    size = 23 * MW2022HUD.Scale,
+    size = 23,
     weight = 500,
 })
 surface.CreateFont("MW2022CompassAnglesSmall", {
     font = "Stratum2 BETA Medium",
-    size = 14 * MW2022HUD.Scale,
+    size = 14,
     weight = 500,
 })
 surface.CreateFont("MW2022AmmoLarge", {
