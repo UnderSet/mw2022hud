@@ -50,7 +50,7 @@ MW2022HUD.Compass.Draw = function()
             (6 + (CompassAngles[i] % 45 == 0 and 6 or 12)), color_white, TEXT_ALIGN_CENTER)
 
         surface.SetDrawColor(color_white)
-        surface.DrawRect(640 - math.floor(math.AngleDifference(dir, CompassAngles[i]) * MW2022HUD.Scale * 13.6),
+        surface.DrawRect(640 - math.floor(math.AngleDifference(dir, CompassAngles[i]) * 13.6),
             34, 1, 6)
     end
     render.SetWriteDepthToDestAlpha(false)
@@ -65,23 +65,23 @@ MW2022HUD.Compass.Draw = function()
 
     surface.SetMaterial(MW2022HUD.Materials.CompassTickerRT)
     surface.SetDrawColor(255,255,255,255)
-    surface.DrawTexturedRect(MW2022HUD.ScreenWidth * 0.5 - 640 * MW2022HUD.Scale, MW2022HUD.TopMargin, 1280 * MW2022HUD.Scale, 40)
+    surface.DrawTexturedRect(MW2022HUD.ScreenWidth * 0.5 - 640 * MW2022HUD.Scale, MW2022HUD.TopMargin, 1280 * MW2022HUD.Scale, 40 * MW2022HUD.Scale)
 
     surface.SetDrawColor(color_white)
     surface.SetMaterial(MW2022HUD.Materials.GradientL)
-    surface.DrawTexturedRect(MW2022HUD.ScreenWidth * 0.5, MW2022HUD.TopMargin + 40, 200 * MW2022HUD.Scale, 1)
+    surface.DrawTexturedRect(MW2022HUD.ScreenWidth * 0.5, MW2022HUD.TopMargin + 40 * MW2022HUD.Scale, 200 * MW2022HUD.Scale, 1)
     surface.SetMaterial(MW2022HUD.Materials.GradientR)
-    surface.DrawTexturedRect(MW2022HUD.ScreenWidth * 0.5 - 200 * MW2022HUD.Scale, MW2022HUD.TopMargin + 40, 200 * MW2022HUD.Scale, 1)
+    surface.DrawTexturedRect(MW2022HUD.ScreenWidth * 0.5 - 200 * MW2022HUD.Scale, MW2022HUD.TopMargin + 40 * MW2022HUD.Scale, 200 * MW2022HUD.Scale, 1)
     surface.SetMaterial(MW2022HUD.Materials.GradientU)
-    surface.DrawTexturedRect(MW2022HUD.ScreenWidth * 0.5 - 1 * 0.5, MW2022HUD.TopMargin, 1, 40)
+    surface.DrawTexturedRect(MW2022HUD.ScreenWidth * 0.5 - 1 * 0.5, MW2022HUD.TopMargin, 1, 40 * MW2022HUD.Scale)
 
     draw.NoTexture()
 
     surface.SetDrawColor(color_white)
-    surface.DrawRect(MW2022HUD.ScreenWidth * 0.5 - 1 * 0.5, MW2022HUD.TopMargin + 40, 1, 21)
+    surface.DrawRect(MW2022HUD.ScreenWidth * 0.5 - 1 * 0.5, MW2022HUD.TopMargin + 40 * MW2022HUD.Scale, 1, 21 * MW2022HUD.Scale)
 
-    draw.SimpleTextOutlined(math.abs(math.floor(dir)), "MW2022CompassText", MW2022HUD.ScreenWidth * 0.5 + 5, MW2022HUD.TopMargin + 43, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-    draw.SimpleTextOutlined(cardinal, "MW2022CompassText", MW2022HUD.ScreenWidth * 0.5 - 5, MW2022HUD.TopMargin + 43, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    draw.SimpleTextOutlined(math.abs(math.floor(dir)), "MW2022CompassText", MW2022HUD.ScreenWidth * 0.5 + 5, MW2022HUD.TopMargin + 43 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
+    draw.SimpleTextOutlined(cardinal, "MW2022CompassText", MW2022HUD.ScreenWidth * 0.5 - 5, MW2022HUD.TopMargin + 43 * MW2022HUD.Scale, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
 end
 
 print("[MWIIHUD] Compass loaded")
