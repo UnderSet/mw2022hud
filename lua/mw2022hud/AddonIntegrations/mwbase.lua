@@ -15,5 +15,5 @@ extendedHandler.GetFiremode = function(wep)
     return true, firemode, firetype, safety, ubgl
 end
 
-MW2022HUD.WeaponExtensions.AddHandler("ARC9", IsWeaponMWB, extendedHandler)
+MW2022HUD.WeaponExtensions.AddHandler("mg_base", IsWeaponMWB, extendedHandler)
 print("[MWIIHUD] Loaded weapon base extension: Modern Warfare Base")
