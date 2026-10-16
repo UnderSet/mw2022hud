@@ -312,7 +312,7 @@ MW2022HUD.Ammo.Draw = function()
                 draw.SimpleTextOutlined(weaponData.TotalAmmoAlt, "MW2022AmmoSmall", MW2022HUD.RightMargin - 335 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 62 * MW2022HUD.Scale, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
             end
         end
-    else
+    elseif weaponData.AmmoTypeAlt != -1 then
         surface.SetDrawColor(color_white)
         surface.SetMaterial(MW2022HUD.Materials.FireGroups[1][1])
         surface.DrawTexturedRect(MW2022HUD.RightMargin - 326 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 66 * MW2022HUD.Scale, 30 * MW2022HUD.Scale, 30 * MW2022HUD.Scale)
