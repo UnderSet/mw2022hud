@@ -11,7 +11,6 @@ MW2022HUD.Minimap.Draw = function()
     
     radar.origin = ply:GetPos()
     radar.rotation = MW2022HUD.EnableMinimapRotation:GetBool() and rotation or angle_zero
-    radar.ratio = 10
     -- radar:SetOrigin(ply:GetPos())
     -- radar:SetRatio(10)
     -- radar:SetDimensions(20,20,200,200)
