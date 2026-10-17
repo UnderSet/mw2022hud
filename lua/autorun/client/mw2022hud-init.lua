@@ -10,6 +10,10 @@ MW2022HUD.EnableScore = CreateClientConVar("MW2022HUD_EnableScore", 1, true, tru
 MW2022HUD.XBounds = CreateClientConVar("MW2022HUD_XBounds", 100, true, true, "Set horizontal bounds.", 0, 100)
 MW2022HUD.YBounds = CreateClientConVar("MW2022HUD_YBounds", 100, true, true, "Set vertical bounds.", 0, 100)
 
+-- render targets CAN'T change size later; the compass uses a render target
+-- (and yep, the compass scales differently to every other element!)
+MW2022HUD.CompassScale = math.min(ScrW() / 1280, 1)
+
 MW2022HUD.SetupBounds = function()
     MW2022HUD.ScreenWidth = ScrW()
     MW2022HUD.ScreenHeight = ScrH()
