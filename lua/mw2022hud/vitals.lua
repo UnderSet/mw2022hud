@@ -10,7 +10,7 @@ MW2022HUD.Materials.PlayerNumBacking = Material("mw2022/playernum_backing.png", 
 local LowRed = Color(201,73,0)
 local OutlineBlack = Color(66,66,66,55)
 local BarBacking = Color(48,48,48,128)
-local ArmorBlue = Color(97,127,205)
+local ArmorColor = Color(115,39,203)
 
 local plyColor = GetConVar("cl_playercolor") and Vector(GetConVar("cl_playercolor"):GetString()):ToColor() or Color(255,255,255)
 local plyColorHSVValue = select(3, plyColor:ToHSV())
@@ -69,7 +69,7 @@ MW2022HUD.Vitals.Draw = function()
             render.SetScissorRect(MW2022HUD.LeftMargin + 64 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - 72 * MW2022HUD.Scale,
                 MW2022HUD.LeftMargin + 64 * MW2022HUD.Scale + armorw * math.min(v:Armor() / v:GetMaxArmor(), 1), MW2022HUD.BottomMargin - vertshift - 52 * MW2022HUD.Scale, true)
             surface.SetMaterial(MW2022HUD.Materials.ArmorBar)
-            surface.SetDrawColor(ArmorBlue)
+            surface.SetDrawColor(ArmorColor)
             surface.DrawTexturedRect(MW2022HUD.LeftMargin + 65 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - 70 * MW2022HUD.Scale,
                 armorw, 15 * MW2022HUD.Scale)
             render.SetScissorRect(0,0,0,0,false)
