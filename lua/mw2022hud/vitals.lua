@@ -32,7 +32,7 @@ MW2022HUD.Vitals.Draw = function()
         for k,v in ipairs(MW2022HUD.SquadData or player.GetAll()) do
             local vertshift = (v == ply and 0 or (6 + plyRenderNum * 52)) * MW2022HUD.Scale
             local barlen = (v == ply and 165 or 127) * MW2022HUD.Scale
-            local armorw = (v == ply and 165 or 125) * MW2022HUD.Scale -- ...blame Infinity Ward...yep, it's slightly different lengths...
+            local armorw = (v == ply and 163 or 125) * MW2022HUD.Scale -- ...blame Infinity Ward...yep, it's slightly different lengths...
             if v == ply then
                 -- extremely crude, but AFAIK there isn't really a way to do basically reverse key-value lookup (lmao)
                 -- pls forgive this heresy
@@ -71,12 +71,12 @@ MW2022HUD.Vitals.Draw = function()
             surface.SetMaterial(MW2022HUD.Materials.ArmorBar)
             surface.SetDrawColor(ArmorColor)
             surface.DrawTexturedRect(MW2022HUD.LeftMargin + 65 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - 70 * MW2022HUD.Scale,
-                armorw, 15 * MW2022HUD.Scale)
+                armorw, 14 * MW2022HUD.Scale)
             render.SetScissorRect(0,0,0,0,false)
             surface.SetMaterial(MW2022HUD.Materials.ArmorOutline)
             surface.SetDrawColor(color_white)
-            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 65 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - (v == ply and 72 or 70) * MW2022HUD.Scale,
-                armorw, (v == ply and 20 or 15) * MW2022HUD.Scale)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 65 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - 70 * MW2022HUD.Scale,
+                armorw, 14 * MW2022HUD.Scale)
 
             if v == ply and MW2022HUD.EnableHealth:GetInt() == 2 then break end
         end
