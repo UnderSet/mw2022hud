@@ -20,6 +20,8 @@ local plyColorHSVCache = {}
 
 local localPlyNum = 1
 
+local locPlyOnly = LocalPlayer() and {LocalPlayer()} or {}
+
 MW2022HUD.Vitals.Draw = function()
     -- warning to anyone who wishes to dip their toes here: this element is extremely laggy and messy, I have warned you
     -- (no but seriously what the fuck is this messy code? I barely know what I'm even fucking doing)
@@ -29,7 +31,7 @@ MW2022HUD.Vitals.Draw = function()
         local plyRenderNum = 1 -- basically, a poorly named counter of how many players we've drawn so far
 
         -- duplicating the drawing stuff twice is NOT the greatest idea known to man...
-        for k,v in ipairs(MW2022HUD.SquadData or player.GetAll()) do
+        for k,v in ipairs(MW2022HUD.SquadData or locPlyOnly) do
             local vertshift = (v == ply and 0 or (6 + plyRenderNum * 52)) * MW2022HUD.Scale
             local barlen = (v == ply and 165 or 127) * MW2022HUD.Scale
             local armorw = (v == ply and 163 or 125) * MW2022HUD.Scale -- ...blame Infinity Ward...yep, it's slightly different lengths...
@@ -95,6 +97,7 @@ end
 hook.Add("InitPostEntity", "MW2022VitalsInit", function()
     plyColor = Vector(GetConVar("cl_playercolor"):GetString()):ToColor()
     plyColorHSVValue = select(3, plyColor:ToHSV())
+    locPlyOnly = {LocalPlayer()}
 end)
 
 cvars.AddChangeCallback("cl_playercolor",
