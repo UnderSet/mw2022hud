@@ -57,9 +57,9 @@ MW2022HUD.Vitals.Draw = function()
                     plyColorHSVCache[v][3] > 0.6 and color_black or color_white, TEXT_ALIGN_CENTER)
 
                 surface.SetDrawColor(BarBacking)
-                surface.DrawRect(MW2022HUD.LeftMargin + 62 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - 55 * MW2022HUD.Scale, barlen + 4 * MW2022HUD.Scale, 3 * MW2022HUD.Scale)
+                surface.DrawRect(MW2022HUD.LeftMargin + 63 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - 55 * MW2022HUD.Scale, barlen + 4 * MW2022HUD.Scale, 3 * MW2022HUD.Scale)
                 surface.SetDrawColor(color_white)
-                surface.DrawRect(MW2022HUD.LeftMargin + 64 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - 55 * MW2022HUD.Scale,
+                surface.DrawRect(MW2022HUD.LeftMargin + 65 * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - 55 * MW2022HUD.Scale,
                     barlen * math.min(v:Health() / v:GetMaxHealth(), 1), 3 * MW2022HUD.Scale)
 
                 draw.SimpleTextOutlined("$0", "MW2022AmmoSmall", MW2022HUD.LeftMargin + (v == ply and 239 or 199) * MW2022HUD.Scale, MW2022HUD.BottomMargin - vertshift - 72 * MW2022HUD.Scale,
