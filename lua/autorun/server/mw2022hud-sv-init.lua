@@ -26,3 +26,5 @@ include("mw2022hud/server/damageindicator.lua")
 resource.AddSingleFile("resource/fonts/Stratum2.ttf")
 resource.AddSingleFile("resource/fonts/NotoSans-Bold.ttf")
 resource.AddSingleFile("resource/fonts/NotoSans-Regular.ttf")
+
+CreateConVar("MW2022HUD_Server_AllPlayersAreEnemies", 0, 384, "Makes the HUD consider all players are enemies at all times, even if a squad is specified.")
