@@ -65,5 +65,15 @@ MW2022HUD.WeaponExtensions.GetMalfunctioning = function(wep)
         return false
     end
 end
+MW2022HUD.WeaponExtensions.UsesCustomWeaponData = function(wep)
+    local curWepBase = wepBase[wep:GetClass()]
+    -- PrintTable(extendedDataHandlers)
+    -- print(curWepBase)
+    return (extendedDataHandlers[curWepBase] and extendedDataHandlers[curWepBase].GetCustomWeaponData) or false 
+end
+MW2022HUD.WeaponExtensions.GetCustomWeaponData = function(wep)
+    local curWepBase = wepBase[wep:GetClass()]
+    return extendedDataHandlers[curWepBase].GetCustomWeaponData(wep)
+end
 
 print("[MWIIHUD] Weapon base extensions system loaded")

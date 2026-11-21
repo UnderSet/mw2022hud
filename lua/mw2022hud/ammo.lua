@@ -87,27 +87,45 @@ MW2022HUD.Ammo.SetupWeaponData = function()
 
     weaponData.ClassName = MW2022HUD.Weapon:GetClass()
 
-    weaponData.CurrentMag = math.max(MW2022HUD.Weapon:Clip1(), 0)
-    weaponData.CurrentMagAlt = math.max(MW2022HUD.Weapon:Clip2(), 0)
-    weaponData.MaxMag = MW2022HUD.Weapon:GetMaxClip1()
-    weaponData.MaxMagAlt = MW2022HUD.Weapon:GetMaxClip2()
-
-    weaponData.AmmoType = MW2022HUD.Weapon:GetPrimaryAmmoType()
-    weaponData.AmmoTypeAlt = MW2022HUD.Weapon:GetSecondaryAmmoType()
-
-    -- the reason for this...deranged chicanery is that string.format throws a fit with a null string, and also we want it to NOT go thru string.format if not an ammo type
-    --   (e.g. melee)
-    weaponData.AmmoTypeName = MW2022HUD.WeaponExtensions.GetCaliber(MW2022HUD.Weapon) or
-        game.GetAmmoName(weaponData.AmmoType) and language.GetPhrase(string.format("%s_ammo", game.GetAmmoName(weaponData.AmmoType))) or "Melee/Tool"
-    weaponData.AmmoTypeAltName = game.GetAmmoName(weaponData.AmmoTypeAlt) and language.GetPhrase(string.format("%s_ammo", game.GetAmmoName(weaponData.AmmoTypeAlt))) or "Melee/Tool"
-
-    weaponData.Reserve = ply:GetAmmoCount(weaponData.AmmoType)
-    weaponData.ReserveAlt = ply:GetAmmoCount(weaponData.AmmoTypeAlt)
-
-    weaponData.TotalAmmo = weaponData.CurrentMag + weaponData.Reserve
-    weaponData.TotalAmmoAlt = weaponData.CurrentMagAlt + weaponData.ReserveAlt
-
     MW2022HUD.WeaponExtensions.GetWeaponBase(MW2022HUD.Weapon)
+
+    if MW2022HUD.WeaponExtensions.UsesCustomWeaponData(MW2022HUD.Weapon) then
+        -- some SWEPs (to my knowledge: Insurgency Sandstorm, ACT3) don't use standard SWEP data stuff (see below for what I mean)
+        -- also, yea, this is somehow syntactically valid GLua???
+        weaponData.CurrentMag,
+        weaponData.CurrentMagAlt,
+        weaponData.MaxMag,
+        weaponData.MaxMagAlt,
+        weaponData.Reserve,
+        weaponData.ReserveAlt,
+        weaponData.AmmoType,
+        weaponData.AmmoTypeAlt,
+        weaponData.AmmoTypeName,
+        weaponData.AmmoTypeAltName = MW2022HUD.WeaponExtensions.GetCustomWeaponData(MW2022HUD.Weapon)
+
+        weaponData.TotalAmmo = weaponData.CurrentMag + weaponData.Reserve
+        weaponData.TotalAmmoAlt = weaponData.CurrentMagAlt + weaponData.ReserveAlt
+    else
+        weaponData.CurrentMag = math.max(MW2022HUD.Weapon:Clip1(), 0)
+        weaponData.CurrentMagAlt = math.max(MW2022HUD.Weapon:Clip2(), 0)
+        weaponData.MaxMag = MW2022HUD.Weapon:GetMaxClip1()
+        weaponData.MaxMagAlt = MW2022HUD.Weapon:GetMaxClip2()
+
+        weaponData.AmmoType = MW2022HUD.Weapon:GetPrimaryAmmoType()
+        weaponData.AmmoTypeAlt = MW2022HUD.Weapon:GetSecondaryAmmoType()
+
+        weaponData.Reserve = ply:GetAmmoCount(weaponData.AmmoType)
+        weaponData.ReserveAlt = ply:GetAmmoCount(weaponData.AmmoTypeAlt)
+
+        weaponData.TotalAmmo = weaponData.CurrentMag + weaponData.Reserve
+        weaponData.TotalAmmoAlt = weaponData.CurrentMagAlt + weaponData.ReserveAlt
+
+        -- the reason for this...deranged chicanery is that string.format throws a fit with a null string, and also we want it to NOT go thru string.format if not an ammo type
+        --   (e.g. melee)
+        weaponData.AmmoTypeName = MW2022HUD.WeaponExtensions.GetCaliber(MW2022HUD.Weapon) or
+            game.GetAmmoName(weaponData.AmmoType) and language.GetPhrase(string.format("%s_ammo", game.GetAmmoName(weaponData.AmmoType))) or "Melee/Tool"
+        weaponData.AmmoTypeAltName = game.GetAmmoName(weaponData.AmmoTypeAlt) and language.GetPhrase(string.format("%s_ammo", game.GetAmmoName(weaponData.AmmoTypeAlt))) or "Melee/Tool"
+    end        
 
     weaponData.FireModeSupport, weaponData.FireMode, weaponData.FireType, weaponData.Safety, weaponData.UBGL = MW2022HUD.WeaponExtensions.GetFiremode(MW2022HUD.Weapon)
 
