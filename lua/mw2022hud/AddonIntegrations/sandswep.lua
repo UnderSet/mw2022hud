@@ -1,6 +1,5 @@
 local extendedHandler = {}
 local isSandSwep = function(wep)
-    print(wep)
     if wep.IsSandSwep then return true else return false end
 end
 
@@ -21,11 +20,6 @@ extendedHandler.GetFiremode = function(wep)
 end
 
 extendedHandler.GetCustomWeaponData = function(wep)
-    for k,v in pairs(wep:GetCalibre()) do
-        print(k)
-    end
-    print("")
-
     return wep:Clip1(),
         wep:GetGLLoaded() and 1 or 0,
         math.max(wep.GetMagSize and wep:GetMagSize() or wep.Primary.ClipSize, 1),
