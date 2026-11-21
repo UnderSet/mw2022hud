@@ -23,6 +23,8 @@ local WeaponNameTime = CurTime() + 1.5
 local AmmoTypeName = CurTime() + 1.5
 local FiremodeNoticeTime = CurTime() + 1.5
 
+local WeaponIconNeedsRedraw = false
+
 MW2022HUD.Debug.DisableWeaponIconScaling = CreateClientConVar("MW2022HUD_Debug_DisableWeaponIconScaling", 0, false, false, "DEBUG: Temporarily disables weapon icon scaling functionality. Setting is not saved.", 0, 1)
 
 MW2022HUD.Materials.FireGroups = {{Material("iw9ui/ui_firetype_semiauto.png")}, {Material("iw9ui/ui_firetype_hyperburst.png")}, {Material("iw9ui/ui_firetype_burst.png")}, {Material("iw9ui/ui_firetype_fullauto.png")}, {Material("mw2022/ui_firetype_safe.png")}}
@@ -114,28 +116,30 @@ MW2022HUD.Ammo.SetupWeaponData = function()
 end
 
 MW2022HUD.DrawWeaponIcon = function(wep, x, y, w, h)
-    local offx, offy, sclw, sclh = 0, 0, MW2022HUD.WeaponIconRTWidth, MW2022HUD.WeaponIconRTHeight
-    local class = weaponData.ClassName
-    if MW2022HUD.WeaponIconOffsets[class] and !MW2022HUD.Debug.DisableWeaponIconScaling:GetBool() then
-        local scalemod = MW2022HUD.WeaponIconOffsets[class][3]
-        offx = MW2022HUD.WeaponIconOffsets[class][1] * MW2022HUD.Scale + (sclw / 2 * (1 - scalemod))
-        offy = MW2022HUD.WeaponIconOffsets[class][2] * MW2022HUD.Scale + (sclh / 2 * (1 - scalemod))
-        sclw = sclw * scalemod
-        sclh = sclh * scalemod
-    end
+    if WeaponIconNeedsRedraw then
+        local offx, offy, sclw, sclh = 0, 0, MW2022HUD.WeaponIconRTWidth, MW2022HUD.WeaponIconRTHeight
+        local class = weaponData.ClassName
+        if MW2022HUD.WeaponIconOffsets[class] and !MW2022HUD.Debug.DisableWeaponIconScaling:GetBool() then
+            local scalemod = MW2022HUD.WeaponIconOffsets[class][3]
+            offx = MW2022HUD.WeaponIconOffsets[class][1] * MW2022HUD.Scale + (sclw / 2 * (1 - scalemod))
+            offy = MW2022HUD.WeaponIconOffsets[class][2] * MW2022HUD.Scale + (sclh / 2 * (1 - scalemod))
+            sclw = sclw * scalemod
+            sclh = sclh * scalemod
+        end
 
-    render.PushRenderTarget(MW2022HUD.WeaponIconRT)
-    cam.Start2D()
-    render.Clear(0,0,0,0,true,true)
-    if wep.DrawWeaponSelection then
-        local oldDrawInfo = wep.PrintWeaponInfo
-        wep.PrintWeaponInfo = MW2022HUD.NullFunction
-        wep:DrawWeaponSelection(offx, offy, sclw, sclh, 255)
-        wep.PrintWeaponInfo = oldDrawInfo
+        render.PushRenderTarget(MW2022HUD.WeaponIconRT)
+        cam.Start2D()
+        render.Clear(0,0,0,0,true,true)
+        if wep.DrawWeaponSelection then
+            local oldDrawInfo = wep.PrintWeaponInfo
+            wep.PrintWeaponInfo = MW2022HUD.NullFunction
+            wep:DrawWeaponSelection(offx, offy, sclw, sclh, 255)
+            wep.PrintWeaponInfo = oldDrawInfo
+        end
+        DrawColorModify(MW2022HUD.WeaponIconColorCorrect)
+        cam.End2D()
+        render.PopRenderTarget()
     end
-    DrawColorModify(MW2022HUD.WeaponIconColorCorrect)
-    cam.End2D()
-    render.PopRenderTarget()
 
     surface.SetMaterial(MW2022HUD.WeaponIconRTMat)
     surface.SetDrawColor(color_white)
@@ -180,6 +184,7 @@ MW2022HUD.Ammo.Draw = function()
         WeaponNameOutline.a = 0
         AmmoTypeNameColor.a = 0
         AmmoTypeNameOutline.a = 0
+        WeaponIconNeedsRedraw = true
     elseif MW2022HUD.LastUBState != weaponData.UBGL then
         AmmoTypeTime = CurTime() + (5/3)
         MW2022HUD.LastUBState = weaponData.UBGL
