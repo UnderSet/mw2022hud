@@ -95,8 +95,11 @@ MW2022HUD.Ammo.SetupWeaponData = function()
     weaponData.AmmoType = MW2022HUD.Weapon:GetPrimaryAmmoType()
     weaponData.AmmoTypeAlt = MW2022HUD.Weapon:GetSecondaryAmmoType()
 
-    weaponData.AmmoTypeName = MW2022HUD.WeaponExtensions.GetCaliber(MW2022HUD.Weapon) or language.GetPhrase(game.GetAmmoName(weaponData.AmmoType) or "Melee/Tool")
-    weaponData.AmmoTypeAltName = language.GetPhrase(game.GetAmmoName(weaponData.AmmoTypeAlt) or "Melee/Tool")
+    -- the reason for this...deranged chicanery is that string.format throws a fit with a null string, and also we want it to NOT go thru string.format if not an ammo type
+    --   (e.g. melee)
+    weaponData.AmmoTypeName = MW2022HUD.WeaponExtensions.GetCaliber(MW2022HUD.Weapon) or
+        game.GetAmmoName(weaponData.AmmoType) and language.GetPhrase(string.format("%s_ammo", game.GetAmmoName(weaponData.AmmoType))) or "Melee/Tool"
+    weaponData.AmmoTypeAltName = game.GetAmmoName(weaponData.AmmoTypeAlt) and language.GetPhrase(string.format("%s_ammo", game.GetAmmoName(weaponData.AmmoTypeAlt))) or "Melee/Tool"
 
     weaponData.Reserve = ply:GetAmmoCount(weaponData.AmmoType)
     weaponData.ReserveAlt = ply:GetAmmoCount(weaponData.AmmoTypeAlt)
@@ -189,7 +192,7 @@ MW2022HUD.Ammo.Draw = function()
         AmmoTypeTime = CurTime() + (5/3)
         MW2022HUD.LastUBState = weaponData.UBGL
         AmmoTypeNameColor.a = 255
-        AmmoTypeNameOutline.a = 55
+ AmmoTypeNameOutline.a = 55
     elseif MW2022HUD.LastFiremode != weaponData.FireMode then
         FiremodeNoticeTime = CurTime() + (5/3)
         MW2022HUD.LastFiremode = weaponData.FireMode
