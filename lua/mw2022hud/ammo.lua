@@ -160,6 +160,8 @@ MW2022HUD.DrawWeaponIcon = function(wep, x, y, w, h)
         DrawColorModify(MW2022HUD.WeaponIconColorCorrect)
         cam.End2D()
         render.PopRenderTarget()
+
+        WeaponIconNeedsRedraw = false
     end
 
     surface.SetMaterial(MW2022HUD.WeaponIconRTMat)
@@ -352,6 +354,7 @@ concommand.Add("MW2022HUD_AddWeaponIconOffset", function(ply, cmd, args)
     local x, y, scale = args
     MW2022HUD.WeaponIconOffsets[LocalPlayer():GetActiveWeapon():GetClass()] = x, y, scale
     file.Write("mw2022weaponiconoffsets.txt", util.Compress(util.TableToJSON(MW2022HUD.WeaponIconOffsets)))
+    WeaponIconNeedsRedraw = true
 end)
 
 print("[MWIIHUD] Weapon info module loaded")
