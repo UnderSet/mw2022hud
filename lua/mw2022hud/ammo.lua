@@ -27,7 +27,13 @@ local WeaponIconNeedsRedraw = false
 
 MW2022HUD.Debug.DisableWeaponIconScaling = CreateClientConVar("MW2022HUD_Debug_DisableWeaponIconScaling", 0, false, false, "DEBUG: Temporarily disables weapon icon scaling functionality. Setting is not saved.", 0, 1)
 
-MW2022HUD.Materials.FireGroups = {{Material("iw9ui/ui_firetype_semiauto.png")}, {Material("iw9ui/ui_firetype_hyperburst.png")}, {Material("iw9ui/ui_firetype_burst.png")}, {Material("iw9ui/ui_firetype_fullauto.png")}, {Material("mw2022/ui_firetype_safe.png")}}
+MW2022HUD.Materials.FireGroups = {
+    {Material("iw9ui/ui_firetype_semiauto.png")},
+    {Material("iw9ui/ui_firetype_hyperburst.png")},
+    {Material("iw9ui/ui_firetype_burst.png")},
+    {Material("iw9ui/ui_firetype_fullauto.png")},
+    {Material("mw2022/ui_firetype_safe.png")}
+}
 
 MW2022HUD.WeaponIconRT = GetRenderTarget("MW5WeaponIcon", 512 * math.Round(MW2022HUD.Scale), 256 * math.Round(MW2022HUD.Scale))
 MW2022HUD.WeaponIconRTMat = CreateMaterial( 
