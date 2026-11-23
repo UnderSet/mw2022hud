@@ -35,7 +35,7 @@ MW2022HUD.Materials.FireGroups = {
     {Material("mw2022/ui_firetype_safe.png")}
 }
 
-MW2022HUD.WeaponIconRT = GetRenderTarget("MW5WeaponIcon", 512 * math.Round(MW2022HUD.Scale), 256 * math.Round(MW2022HUD.Scale))
+MW2022HUD.WeaponIconRT = GetRenderTarget("MW5WeaponIcon", 512 * MW2022HUD.Scale, 256 * MW2022HUD.Scale)
 MW2022HUD.WeaponIconRTMat = CreateMaterial( 
     "MW5WeaponIconMat","UnlitGeneric",
     {
@@ -43,7 +43,8 @@ MW2022HUD.WeaponIconRTMat = CreateMaterial(
         ["$translucent"] = "1"
     } 
 )
-MW2022HUD.WeaponIconRTWidth, MW2022HUD.WeaponIconRTHeight = 512 * math.Round(MW2022HUD.Scale), 256 * math.Round(MW2022HUD.Scale)
+MW2022HUD.WeaponIconRTWidth, MW2022HUD.WeaponIconRTHeight = 512 * MW2022HUD.Scale, 256 * MW2022HUD.Scale
+MW2022HUD.WeaponIconScale = MW2022HUD.Scale -- render targets CAN'T change size in gmod post-creation...but changing disp res breaks that...you know where I'm goin
 
 MW2022HUD.WeaponIconColorCorrect = {
     [ "$pp_colour_addr" ] = 0,
@@ -148,8 +149,8 @@ MW2022HUD.DrawWeaponIcon = function(wep, x, y, w, h)
         local class = weaponData.ClassName
         if MW2022HUD.WeaponIconOffsets[class] and !MW2022HUD.Debug.DisableWeaponIconScaling:GetBool() then
             local scalemod = MW2022HUD.WeaponIconOffsets[class][3]
-            offx = MW2022HUD.WeaponIconOffsets[class][1] * MW2022HUD.Scale + (sclw / 2 * (1 - scalemod))
-            offy = MW2022HUD.WeaponIconOffsets[class][2] * MW2022HUD.Scale + (sclh / 2 * (1 - scalemod))
+            offx = MW2022HUD.WeaponIconOffsets[class][1] * MW2022HUD.WeaponIconScale + (sclw / 2 * (1 - scalemod))
+            offy = MW2022HUD.WeaponIconOffsets[class][2] * MW2022HUD.WeaponIconScale + (sclh / 2 * (1 - scalemod))
             sclw = sclw * scalemod
             sclh = sclh * scalemod
         end
@@ -236,7 +237,7 @@ MW2022HUD.Ammo.Draw = function()
     FiremodeNoticeOutline.a = 55 * math.Clamp((FiremodeNoticeTime - 0.5 - CurTime()) * 4, 0, 1)
 
     if !MW2022HUD.WeaponIconPrerenders[weaponData.ClassName] then
-    MW2022HUD.DrawWeaponIcon(MW2022HUD.Weapon, MW2022HUD.RightMargin - 500 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 173 * MW2022HUD.Scale, 280 * MW2022HUD.Scale, 140 * MW2022HUD.Scale)
+        MW2022HUD.DrawWeaponIcon(MW2022HUD.Weapon, MW2022HUD.RightMargin - 500 * MW2022HUD.Scale, MW2022HUD.BottomMargin - 173 * MW2022HUD.Scale, 280 * MW2022HUD.Scale, 140 * MW2022HUD.Scale)
     else
         surface.SetMaterial(MW2022HUD.WeaponIconPrerenders[weaponData.ClassName])
         surface.SetDrawColor(color_white)
