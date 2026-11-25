@@ -1,10 +1,19 @@
 MW2022HUD.Compass = {}
 
+local CompassAngles = {0,15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,240,255,270,285,300,315,330,345} 
+local CompassAnglesText = {"N",15,30,"NE",60,75,"E",105,120,"SE",150,165,"S",195,210,"SW",240,255,"W",285,300,"NW",330,345} 
+
+local CompassAngleColor = color_white:Copy()
+
+local OutlineBlack = Color(66,66,66,55)
+
+local CompassLength = MW2022HUD.CompassWZLength:GetBool() and 800 or 1280
+
 MW2022HUD.Materials.Compass = Material("iw9ui/hud_compass_location_backer.png", "noclamp smooth")
 MW2022HUD.Materials.CompassTickerMask2 = Material("mw2022/compass_tickertape_mask.png")
 MW2022HUD.Materials.CompassBacker = Material("mw2022/compass_tickertape_backing.png")
 
-MW2022HUD.Compass.CompassTickerRT = GetRenderTarget("MW5CompassTicker", 1280 * MW2022HUD.CompassScale, 40 * MW2022HUD.CompassScale)
+MW2022HUD.Compass.CompassTickerRT = GetRenderTarget("MW5CompassTicker", CompassLength * MW2022HUD.CompassScale, 40 * MW2022HUD.CompassScale)
 MW2022HUD.Materials.CompassTickerRT = CreateMaterial( 
     "MW5CompassTickerMat","UnlitGeneric",
     {
@@ -12,13 +21,6 @@ MW2022HUD.Materials.CompassTickerRT = CreateMaterial(
         ["$translucent"] = "1"
     } 
 )
-
-local CompassAngles = {0,15,30,45,60,75,90,105,120,135,150,165,180,195,210,225,240,255,270,285,300,315,330,345} 
-local CompassAnglesText = {"N",15,30,"NE",60,75,"E",105,120,"SE",150,165,"S",195,210,"SW",240,255,"W",285,300,"NW",330,345} 
-
-local CompassAngleColor = color_white:Copy()
-
-local OutlineBlack = Color(66,66,66,55)
 
 MW2022HUD.Compass.Draw = function()
     if !MW2022HUD.EnableCompass:GetBool() then return end
@@ -39,7 +41,7 @@ MW2022HUD.Compass.Draw = function()
     render.Clear(0,0,0,0,true,true)
     surface.SetMaterial(MW2022HUD.Materials.CompassBacker)
     surface.SetDrawColor(255,255,255,160)
-    surface.DrawTexturedRect(0, 0, 1280 * MW2022HUD.CompassScale, 40 * MW2022HUD.CompassScale)
+    surface.DrawTexturedRect(0, 0, CompassLength * MW2022HUD.CompassScale, 40 * MW2022HUD.CompassScale)
     for i=1,360 do
         surface.SetDrawColor(color_white)
         surface.DrawRect((640 - math.floor(math.AngleDifference(dir, i) * 13.6)) * MW2022HUD.CompassScale, 37 * MW2022HUD.CompassScale, 1, 3)
@@ -57,7 +59,7 @@ MW2022HUD.Compass.Draw = function()
 	render.OverrideBlend(true, BLEND_SRC_COLOR, BLEND_SRC_ALPHA, BLENDFUNC_MIN)
         surface.SetDrawColor(255,255,255,255)
 		surface.SetMaterial(MW2022HUD.Materials.CompassTickerMask2)
-		surface.DrawTexturedRect(0, 0, 1280 * MW2022HUD.CompassScale, 40 * MW2022HUD.CompassScale)
+		surface.DrawTexturedRect(0, 0, CompassLength * MW2022HUD.CompassScale, 40 * MW2022HUD.CompassScale)
 	render.OverrideBlend(false)
     render.SetWriteDepthToDestAlpha(true)
     cam.End2D()
@@ -65,7 +67,7 @@ MW2022HUD.Compass.Draw = function()
 
     surface.SetMaterial(MW2022HUD.Materials.CompassTickerRT)
     surface.SetDrawColor(255,255,255,255)
-    surface.DrawTexturedRect(MW2022HUD.ScreenWidth * 0.5 - 640 * MW2022HUD.Scale, MW2022HUD.TopMargin, 1280 * MW2022HUD.Scale, 40 * MW2022HUD.Scale)
+    surface.DrawTexturedRect(MW2022HUD.ScreenWidth * 0.5 - (CompassLength / 2) * MW2022HUD.Scale, MW2022HUD.TopMargin, CompassLength * MW2022HUD.Scale, 40 * MW2022HUD.Scale)
 
     surface.SetDrawColor(color_white)
     surface.SetMaterial(MW2022HUD.Materials.GradientL)
