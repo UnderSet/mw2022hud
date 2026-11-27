@@ -80,4 +80,4 @@ hook.Add("DrawDeathNotice", "MW2022HideDeathNotice", function()
     if MW2022HUD.Enable:GetBool() then return false end
 end)
 
-    MsgC(Color(123, 196, 45), "[MW2022HUD]", Color(191,191,191), " Module loaded: Killfeed\n")
+MW2022HUD.MsgC(Color(191,191,191), "Module loaded: Killfeed\n")
