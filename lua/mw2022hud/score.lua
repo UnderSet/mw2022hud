@@ -1,28 +1,26 @@
 MW2022HUD.Score = {}
-MW2022HUD.ScoreData = {}
 
-MW2022HUD.Score.Enabled = false -- set to true to show, set back to false to hide (duh)
-MW2022HUD.Score.UseCustomDraw = false -- some gamemodes have special integrations that don't use the regular scorebars
+local ActiveScoreSource = false
+local ScoreSources = {}
 
-MW2022HUD.Score.GamemodeName = gmod.GetGamemode() and gmod.GetGamemode().Name or ""
-MW2022HUD.Score.OverrideGamemodeName = "" -- override shown gamemode name, useful for say, Beatrun; set to "" (like here) to disable
+local GamemodeName = gmod.GetGamemode() and gmod.GetGamemode().Name or ""
+local OverrideGamemodeName = "" -- override shown gamemode name, useful for say, Beatrun; set to "" (like here) to disable
 
-MW2022HUD.Score.GamemodeIconRT = GetRenderTarget("MW5GamemodeIcon", 256, 256)
-MW2022HUD.Score.GamemodeIconRTMat = CreateMaterial( 
+local GamemodeIconRT = GetRenderTarget("MW5GamemodeIcon", 256, 256)
+local GamemodeIconRTMat = CreateMaterial( 
     "MW5GamemodeIconMat","UnlitGeneric",
     {
-        ["$basetexture"] = MW2022HUD.Score.GamemodeIconRT:GetName(),
+        ["$basetexture"] = GamemodeIconRT:GetName(),
         ["$translucent"] = "1"
     } 
 )
 
-MW2022HUD.ScoreData.MaxScore = 65
-MW2022HUD.ScoreData.AllyScore = 17
-MW2022HUD.ScoreData.EnemyScore = 18
-MW2022HUD.ScoreData.RemainingTime = 0 -- use a format like what CurTime() returns!!!
-MW2022HUD.ScoreData.FFAMode = false -- MWII's score HUD...is kinda weird and shows a bit differently in FFA gamemodes
-MW2022HUD.ScoreData.FFALocalPos = 8
-MW2022HUD.ScoreData.FFAEnemyLeadName = ""
+local MaxScore = 65
+local AllyScore = 17
+local EnemyScore = 18
+local RemainingTime = 0 -- in seconds, no need to round
+local FFAPos = 8 -- set to false (as in yes the boolean false) to turn off FFA mode
+local FFAEnemyLead = ""
 
 MW2022HUD.Materials.Score = Material("iw9ui/hud_score_bar.png")
 MW2022HUD.Materials.ScoreInverse = Material("iw9ui/hud_score_bar_reverse.png")
@@ -67,18 +65,17 @@ local GamemodeIcon = Material("gamemodes/" .. engine.ActiveGamemode() .. "/icon2
 local GradientRight = Material("vgui/gradient-r")
 
 -- Integration-defined function (see mw2022hud/GamemodeIntegrations/beatrun.lua)
-MW2022HUD.Score.SetScores = function() end
+MW2022HUD.Score.GetScores = function()
+    if !ActiveScoreSource then return end
+    MaxScore, AllyScore, EnemyScore, RemainingTime, FFAPos, FFAEnemyLead = ScoreSources[ActiveScoreSource].func()
+end
 
 MW2022HUD.Score.Draw = function()
     if !MW2022HUD.EnableScore:GetBool() or (!MW2022HUD.Score.Enabled and MW2022HUD.EnableScore:GetInt() == 2) then return end
 
-    -- debugging, comment at your wish
-    -- MW2022HUD.ScoreData.MaxScore = 20
-    -- MW2022HUD.ScoreData.AllyScore = math.Round(CurTime() * 4 % MW2022HUD.ScoreData.MaxScore)
-    -- MW2022HUD.ScoreData.EnemyScore = MW2022HUD.ScoreData.MaxScore - math.Round(CurTime() * 4 % MW2022HUD.ScoreData.MaxScore)
-    -- MW2022HUD.ScoreData.EndTime = CurTime() + 404
+    MW2022HUD.Score.GetScores()
 
-    render.PushRenderTarget(MW2022HUD.Score.GamemodeIconRT)
+    render.PushRenderTarget(GamemodeIconRT)
     cam.Start2D()
     render.Clear(0, 0, 0, 0, true, true)
 
@@ -119,40 +116,41 @@ MW2022HUD.Score.Draw = function()
     cam.End2D()
     render.PopRenderTarget()
 
-    surface.SetMaterial(MW2022HUD.Score.GamemodeIconRTMat)
+    surface.SetMaterial(GamemodeIconRTMat)
     surface.SetDrawColor(255,255,255,128)
     surface.DrawTexturedRect(MW2022HUD.LeftMargin - 65 * MW2022HUD.Scale, MW2022HUD.TopMargin + 255 * MW2022HUD.Scale, 135 * MW2022HUD.Scale, 135 * MW2022HUD.Scale)
 
-    draw.SimpleText(string.upper("// " .. (MW2022HUD.Score.OverrideGamemodeName != "" and MW2022HUD.Score.OverrideGamemodeName or MW2022HUD.Score.GamemodeName)),
+    draw.SimpleText(string.upper("// " .. (OverrideGamemodeName != "" and OverrideGamemodeName or GamemodeName)),
         "MW2022GamemodeName", MW2022HUD.LeftMargin + 25 * MW2022HUD.Scale, MW2022HUD.TopMargin + 246 * MW2022HUD.Scale, GamemodeGray, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
     
-    if !MW2022HUD.Score.Enabled then return end
+    if !ActiveScoreSource then return end
 
-    if MW2022HUD.Score.UseCustomDraw then
-        MW2022HUD.Score.CustomDraw()
+    if ScoreSources[ActiveScoreSource].customDraw then
+        -- some gamemodes have special integrations that don't use the regular scorebars
+        ScoreSources[ActiveScoreSource].func()
     else
         -- THESE ARE NOT WHAT YOU THINK THEY ARE.
-        local AllyScoreRatio = 1 - MW2022HUD.ScoreData.AllyScore / MW2022HUD.ScoreData.MaxScore
-        local EnemyScoreRatio = 1 - MW2022HUD.ScoreData.EnemyScore / MW2022HUD.ScoreData.MaxScore
-        local ScoreBalance = MW2022HUD.ScoreData.AllyScore > MW2022HUD.ScoreData.EnemyScore and 1
-            or MW2022HUD.ScoreData.AllyScore == MW2022HUD.ScoreData.EnemyScore and 0
+        local AllyScoreRatio = 1 - AllyScore / MaxScore
+        local EnemyScoreRatio = 1 - EnemyScore / MaxScore
+        local ScoreBalance = AllyScore > EnemyScore and 1
+            or AllyScore == EnemyScore and 0
             or -1
-        local FormattedTime = string.FormattedTime(MW2022HUD.ScoreData.RemainingTime, "%01i:%02i")
+        local FormattedTime = string.FormattedTime(RemainingTime, "%01i:%02i")
 
-        draw.SimpleTextOutlined(MW2022HUD.ScoreData.AllyScore, ScoreBalance == 1 and "MW2022ScoreWinning" or "MW2022ScoreLosing",
+        draw.SimpleTextOutlined(AllyScore, ScoreBalance == 1 and "MW2022ScoreWinning" or "MW2022ScoreLosing",
             MW2022HUD.LeftMargin + 56 * MW2022HUD.Scale, MW2022HUD.TopMargin + 259 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-        draw.SimpleTextOutlined(MW2022HUD.ScoreData.EnemyScore, ScoreBalance == -1 and "MW2022ScoreWinning" or "MW2022ScoreLosing",
+        draw.SimpleTextOutlined(EnemyScore, ScoreBalance == -1 and "MW2022ScoreWinning" or "MW2022ScoreLosing",
             MW2022HUD.LeftMargin + 56 * MW2022HUD.Scale, MW2022HUD.TopMargin + 331 * MW2022HUD.Scale, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
 
-        if MW2022HUD.ScoreData.FFAMode then
-            draw.SimpleTextOutlined(string.CardinalToOrdinal(MW2022HUD.ScoreData.FFALocalPos), "MW2022GamemodeTime",
+        if FFAPos then
+            draw.SimpleTextOutlined(string.CardinalToOrdinal(FFAPos), "MW2022GamemodeTime",
                 MW2022HUD.LeftMargin + 250 * MW2022HUD.Scale, MW2022HUD.TopMargin + 283 * MW2022HUD.Scale, WinningColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-            draw.SimpleTextOutlined(MW2022HUD.ScoreData.FFALocalPos != 1 and "1st" or "2nd", "MW2022GamemodeTime",
+            draw.SimpleTextOutlined(FFAPos != 1 and "1st" or "2nd", "MW2022GamemodeTime",
                 MW2022HUD.LeftMargin + 250 * MW2022HUD.Scale, MW2022HUD.TopMargin + 343 * MW2022HUD.Scale, LosingColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
-            draw.SimpleTextOutlined(MW2022HUD.ScoreData.FFAEnemyLeadName, "MW2022ScorePlayerName",
+            draw.SimpleTextOutlined(FFAEnemyLead, "MW2022ScorePlayerName",
                 MW2022HUD.LeftMargin + 55 * MW2022HUD.Scale, MW2022HUD.TopMargin + 373 * MW2022HUD.Scale, LosingColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
 
-            if MW2022HUD.ScoreData.RemainingTime >= 0 then 
+            if RemainingTime >= 0 then 
                 draw.SimpleTextOutlined(FormattedTime, "MW2022GamemodeTime", MW2022HUD.LeftMargin + 250 * MW2022HUD.Scale, MW2022HUD.TopMargin + 396 * MW2022HUD.Scale,
                     color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
             end
@@ -192,15 +190,19 @@ MW2022HUD.Score.Draw = function()
                 MW2022HUD.LeftMargin + 240 * MW2022HUD.Scale, MW2022HUD.TopMargin + 288 * MW2022HUD.Scale,
                 ScoreBalance == 1 and WinningColor or ScoreBalance == 0 and color_white or LosingColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
 
-            if MW2022HUD.ScoreData.RemainingTime >= 0 then 
+            if RemainingTime >= 0 then 
                 draw.SimpleTextOutlined(FormattedTime, "MW2022GamemodeTime", MW2022HUD.LeftMargin + 240 * MW2022HUD.Scale, MW2022HUD.TopMargin + 338 * MW2022HUD.Scale,
                     color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
             end
+            
+            -- surface.SetDrawColor(color_white)
+            -- surface.DrawRect(MW2022HUD.LeftMargin + 61 * MW2022HUD.Scale, MW2022HUD.TopMargin + 313 * MW2022HUD.Scale, 180 * MW2022HUD.Scale, 1 * MW2022HUD.Scale)
+
             -- don't even fucking *think* of touching this stencil mess, we clear?
             render.SetScissorRect(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale, MW2022HUD.TopMargin + 313 * MW2022HUD.Scale,
                 MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale + 190 * MW2022HUD.Scale, MW2022HUD.TopMargin + 335 * MW2022HUD.Scale, true)
-            surface.SetMaterial(MW2022HUD.Materials.Score)
             surface.SetDrawColor(ScoreBG)
+            surface.SetMaterial(MW2022HUD.Materials.Score)
             surface.DrawTexturedRect(MW2022HUD.LeftMargin + 60 * MW2022HUD.Scale, MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
             surface.SetMaterial(MW2022HUD.Materials.ScoreInverse)
             surface.DrawTexturedRect(MW2022HUD.LeftMargin + 60 * MW2022HUD.Scale, MW2022HUD.TopMargin + 324 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
@@ -231,23 +233,23 @@ MW2022HUD.Score.Draw = function()
 
             surface.SetMaterial(MW2022HUD.Materials.Score)
             surface.SetDrawColor(AllyColor)
-            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 60 * MW2022HUD.Scale - (AllyScoreRatio * 188), MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale - (AllyScoreRatio * 180), MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
             surface.SetMaterial(ScoreBalance == 1 and MW2022HUD.Materials.ScoreGradient or MW2022HUD.Materials.ScoreGradientLosing)
             surface.SetDrawColor(AllyColorGradient)
-            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 226 * MW2022HUD.Scale - (AllyScoreRatio * 188), MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 23 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 225 * MW2022HUD.Scale - (AllyScoreRatio * 180), MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 23 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
             surface.SetMaterial(MW2022HUD.Materials.ScoreTick)
             surface.SetDrawColor(color_white)
-            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 240 * MW2022HUD.Scale - (AllyScoreRatio * 188), MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 10 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 239 * MW2022HUD.Scale - (AllyScoreRatio * 180), MW2022HUD.TopMargin + 312 * MW2022HUD.Scale, 10 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
 
             surface.SetMaterial(MW2022HUD.Materials.ScoreInverse)
             surface.SetDrawColor(EnemyColor)
-            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 60 * MW2022HUD.Scale - (EnemyScoreRatio * 188), MW2022HUD.TopMargin + 324 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 59 * MW2022HUD.Scale - (EnemyScoreRatio * 180), MW2022HUD.TopMargin + 324 * MW2022HUD.Scale, 188 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
             surface.SetMaterial(ScoreBalance == -1 and MW2022HUD.Materials.ScoreGradientInverse or MW2022HUD.Materials.ScoreGradientLosingInverse)
             surface.SetDrawColor(EnemyColorGradient)
-            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 226 * MW2022HUD.Scale - (EnemyScoreRatio * 188), MW2022HUD.TopMargin + 324 * MW2022HUD.Scale, 23 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 225 * MW2022HUD.Scale - (EnemyScoreRatio * 180), MW2022HUD.TopMargin + 323 * MW2022HUD.Scale, 23 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
             surface.SetMaterial(MW2022HUD.Materials.ScoreTickInverse)
             surface.SetDrawColor(color_white)
-            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 240 * MW2022HUD.Scale - (EnemyScoreRatio * 188), MW2022HUD.TopMargin + 324 * MW2022HUD.Scale, 10 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
+            surface.DrawTexturedRect(MW2022HUD.LeftMargin + 239 * MW2022HUD.Scale - (EnemyScoreRatio * 180), MW2022HUD.TopMargin + 324 * MW2022HUD.Scale, 10 * MW2022HUD.Scale, 10 * MW2022HUD.Scale)
 
             render.SetStencilEnable(false)
             render.SetScissorRect(0,0,0,0,false)
@@ -255,8 +257,25 @@ MW2022HUD.Score.Draw = function()
     end
 end
 
+MW2022HUD.Score.AddSource = function(name, isCustomDraw, func)
+    ScoreSources[name] = {["func"] = func, ["customDraw"] = isCustomDraw}
+end
+
+MW2022HUD.Score.SetActiveSource = function(name)
+    if ActiveScoreSource and name then
+        MW2022HUD.DebugMsgC(Color(255,0,0), "score.lua: Cannot set a score source while one is already active!\n")
+        return
+    end
+    ActiveScoreSource = name
+    MW2022HUD.DebugMsgC("score.lua: Set score source to " .. tostring(name) .. "\n")
+end
+
+MW2022HUD.Score.SetGamemodeNameOverride = function(name)
+    OverrideGamemodeName = name
+end
+
 hook.Add("PostGamemodeLoaded", "MW2022HUDGetGamemode", function()
-    MW2022HUD.Score.GamemodeName = gmod.GetGamemode().Name
+    GamemodeName = gmod.GetGamemode().Name
     hook.Remove("PostGamemodeLoaded", "MW2022HUDGetGamemode")
 end)
 
@@ -266,3 +285,17 @@ if file.Exists("lua/mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() 
 end
 
 MW2022HUD.MsgC(Color(191,191,191), "Module loaded: Scores\n")
+
+-- MW2022HUD.Score.AddSource("mw2022huddebug", false, function()
+--     local MaxScore = 250
+--     local AllyScore = math.Round(CurTime() % 10 * 100)
+--     local EnemyScore = 1000 - AllyScore
+--     local RemainingTime = 3600 - CurTime() % 3600
+--     local FFAPos = false
+--     local FFAEnemyLead = "thetunaaaa"
+--     return MaxScore, AllyScore, EnemyScore, RemainingTime, FFAPos, FFAEnemyLead
+-- end)
+-- MW2022HUD.Score.SetActiveSource("mw2022huddebug")
+-- MW2022HUD.Score.SetActiveSource("mw2022huddebug")
+-- MW2022HUD.Score.SetGamemodeNameOverride("MWII HUD DEBUG")
+-- PrintTable(ScoreSources)
