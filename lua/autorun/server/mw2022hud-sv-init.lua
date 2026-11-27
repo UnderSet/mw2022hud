@@ -1,18 +1,18 @@
 -- this is the very first thing we run (before even setting up MW2022HUD.MsgC) so we can't use that
 -- aka the one time we intentionally use raw MsgC
-MsgC(Color(123, 196, 45), "[MWIIHUD] ", Color(0,255,255), "[SV] ",
+MsgC(Color(123, 196, 45), "[MW2022HUD] ", Color(0,255,255), "[SV] ",
     Color(255,255,255), "Beginning HUD serverside initialization\n")
 MW2022HUD = MW2022HUD or {}
 
 MW2022HUD.MsgC = function(...)
     -- convenience wrapper around MsgC
-    MsgC(Color(123, 196, 45), "[MWIIHUD] ", Color(0,255,255), "[SV] ", ..., "\n")
+    MsgC(Color(123, 196, 45), "[MW2022HUD] ", Color(0,255,255), "[SV] ", ..., "\n")
 end
 
 MW2022HUD.DebugMsgC = function(...)
     -- thin wrapper around MsgC for debug-only text
     if !dev:GetBool() then return end
-    MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(0,255,255), "[SV] ", Color(255,255,0), " <DEBUG> ", ..., "\n") 
+    MsgC(Color(123, 196, 45), "[MW2022HUD]", Color(0,255,255), "[SV] ", Color(255,255,0), " <DEBUG> ", ..., "\n") 
 end
 
 AddCSLuaFile("mw2022hud/fonts.lua")

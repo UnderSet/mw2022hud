@@ -86,4 +86,4 @@ MW2022HUD.Compass.Draw = function()
     draw.SimpleTextOutlined(cardinal, "MW2022CompassText", MW2022HUD.ScreenWidth * 0.5 - 5, MW2022HUD.TopMargin + 43 * MW2022HUD.Scale, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 1.5, OutlineBlack)
 end
 
-MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(191,191,191), " Module loaded: Compass\n")
+MsgC(Color(123, 196, 45), "[MW2022HUD]", Color(191,191,191), " Module loaded: Compass\n")

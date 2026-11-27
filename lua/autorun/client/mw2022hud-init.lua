@@ -1,10 +1,10 @@
 -- this is the very first things we run (before even setting up MW2022HUD.MsgC) so we can't use that
 -- aka the few times we intentionally use raw MsgC
-MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(255,255,255), " mw2022hud - Modern Warfare II Heads Up Display recreation\n")
-MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(255,255,255), " Written and some assets by UnderSet, MWII assets by Activision and Infinity Ward\n")
-MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(255,255,255), " See README on GitHub or Workshop page for more info and additional credits\n")
-MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(191,191,191), " ---------------------------------------------------------\n")
-MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(255,255,255), " Beginning HUD initialization\n")
+MsgC(Color(123, 196, 45), "[MW2022HUD]", Color(255,255,255), " mw2022hud - Modern Warfare II Heads Up Display recreation\n")
+MsgC(Color(123, 196, 45), "[MW2022HUD]", Color(255,255,255), " Written and some assets by UnderSet, MWII assets by Activision and Infinity Ward\n")
+MsgC(Color(123, 196, 45), "[MW2022HUD]", Color(255,255,255), " See README on GitHub or Workshop page for more info and additional credits\n")
+MsgC(Color(123, 196, 45), "[MW2022HUD]", Color(191,191,191), " ---------------------------------------------------------\n")
+MsgC(Color(123, 196, 45), "[MW2022HUD]", Color(255,255,255), " Beginning HUD initialization\n")
 
 local initstart = SysTime()
 
@@ -30,13 +30,13 @@ MW2022HUD.CompassScale = math.min(ScrW() / 1280, 1)
 
 MW2022HUD.MsgC = function(...)
     -- convenience wrapper around MsgC
-    MsgC(Color(123, 196, 45), "[MWIIHUD] ", ...)
+    MsgC(Color(123, 196, 45), "[MW2022HUD] ", ...)
 end
 
 MW2022HUD.DebugMsgC = function(...)
     -- thin wrapper around MsgC for debug-only text
     if !dev:GetBool() then return end
-    MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(255,255,0), " <DEBUG> ", ...)
+    MsgC(Color(123, 196, 45), "[MW2022HUD]", Color(255,255,0), " <DEBUG> ", ...)
 end
 
 MW2022HUD.SetupBounds = function()
