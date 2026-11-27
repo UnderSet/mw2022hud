@@ -11,4 +11,4 @@ hook.Add("PostEntityTakeDamage", "MW2022PlayerDamageTaken", function(ent, dmginf
     end
 end)
 
-MW2022HUD.MsgC(Color(0,255,255), "[SV] ", Color(191,191,191), "Module loaded: Damage indicators\n")
+MW2022HUD.MsgC(Color(191,191,191), "Module loaded: Damage indicators\n")
