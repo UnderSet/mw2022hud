@@ -6,13 +6,13 @@ MW2022HUD = MW2022HUD or {}
 
 MW2022HUD.MsgC = function(...)
     -- convenience wrapper around MsgC
-    MsgC(Color(123, 196, 45), "[MW2022HUD] ", Color(0,255,255), "[SV] ", ..., "\n")
+    MsgC(Color(123, 196, 45), "[MW2022HUD] ", Color(0,255,255), "[SV] ", ...)
 end
 
 MW2022HUD.DebugMsgC = function(...)
     -- thin wrapper around MsgC for debug-only text
     if !dev:GetBool() then return end
-    MsgC(Color(123, 196, 45), "[MW2022HUD]", Color(0,255,255), "[SV] ", Color(255,255,0), " <DEBUG> ", ..., "\n") 
+    MsgC(Color(123, 196, 45), "[MW2022HUD]", Color(0,255,255), "[SV] ", Color(255,255,0), " <DEBUG> ", ...) 
 end
 
 AddCSLuaFile("mw2022hud/fonts.lua")
@@ -44,4 +44,4 @@ resource.AddSingleFile("resource/fonts/NotoSans-Regular.ttf")
 
 CreateConVar("MW2022HUD_Server_AllPlayersAreEnemies", 0, 384, "Makes the HUD consider all players are enemies at all times, even if a squad is specified.")
 
-MW2022HUD.MsgC(Color(255,255,255), "HUD serverside initialization complete")
+MW2022HUD.MsgC(Color(255,255,255), "HUD serverside initialization complete\n")
