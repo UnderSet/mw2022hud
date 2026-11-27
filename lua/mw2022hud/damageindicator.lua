@@ -36,4 +36,4 @@ net.Receive("MW2022PlayerDamageTaken", function()
     MW2022HUD.DamageIndicator.DamageAng[#MW2022HUD.DamageIndicator.DamageAng + 1] = {ang, false, CurTime() + 6}
 end)
 
-print("[MWIIHUD] Damage indicator loaded")
+MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(191,191,191), " Module loaded: Damage indicator\n")

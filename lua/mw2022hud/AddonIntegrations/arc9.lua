@@ -50,4 +50,4 @@ extendedHandler.GetMalfunctioning = function(wep)
 end
 
 MW2022HUD.WeaponExtensions.AddHandler("ARC9", IsWeaponARC9, extendedHandler)
-print("[MWIIHUD] Loaded weapon base extension: ARC9")
+MW2022HUD.MsgC(Color(191,191,191), "Weapon base extension loaded: ARC9\n")

@@ -94,4 +94,4 @@ surface.CreateFont("MW2022FiremodeNotice", {
     weight = 15,
 })
 
-print("[MWIIHUD] All fonts successfully created")
+MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(191,191,191), " Initialized all fonts\n")

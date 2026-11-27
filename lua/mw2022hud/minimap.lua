@@ -33,4 +33,9 @@ hook.Add("InitPostEntity", "MW2022MapInit", function() ply = LocalPlayer() end)
 
 MW2022HUD.Minimap.UpdateLayout()
 
-print("[MWIIHUD] Minimap loaded")
+if radar then
+    MW2022HUD.MsgC(Color(191,191,191), "Module loaded: Minimap\n")
+else
+    MW2022HUD.MsgC(Color(255,0,0), "Module failed to initialize: Minimap\n")
+    MW2022HUD.MsgC(Color(255,191,0), "    [!] GMinimap is not installed\n")
+end

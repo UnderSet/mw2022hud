@@ -76,4 +76,4 @@ MW2022HUD.WeaponExtensions.GetCustomWeaponData = function(wep)
     return extendedDataHandlers[curWepBase].GetCustomWeaponData(wep)
 end
 
-print("[MWIIHUD] Weapon base extensions system loaded")
+MW2022HUD.MsgC(Color(191,191,191), "Module loaded: Weapon base extensions\n")

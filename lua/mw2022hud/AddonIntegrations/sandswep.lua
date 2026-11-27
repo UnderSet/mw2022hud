@@ -33,4 +33,4 @@ extendedHandler.GetCustomWeaponData = function(wep)
 end
 
 MW2022HUD.WeaponExtensions.AddHandler("sandswep", isSandSwep, extendedHandler)
-print("[MWIIHUD] > Loaded weapon base extension: Insurgency Sandstorm SWEPs")
+MW2022HUD.MsgC(Color(191,191,191), "Weapon base extension loaded: Sandstorm SWEP Base\n")

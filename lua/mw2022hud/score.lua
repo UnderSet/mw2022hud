@@ -262,7 +262,7 @@ end)
 
 if file.Exists("lua/mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() .. ".lua", "GAME") then
     include("mw2022hud/GamemodeIntegrations/" .. engine.ActiveGamemode() .. ".lua")
-    print("[MWIIHUD] Loaded gamemode integration (current gamemode name: " .. engine.ActiveGamemode() .. ")")
+    MW2022HUD.DebugMsgC("score.lua: Gamemode integration module loaded for " .. engine.ActiveGamemode() .. "\n")
 end
 
-print("[MWIIHUD] Score system loaded")
+MW2022HUD.MsgC(Color(191,191,191), "Module loaded: Scores\n")

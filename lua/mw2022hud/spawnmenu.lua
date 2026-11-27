@@ -28,7 +28,7 @@ hook.Add("PopulateToolMenu", "MW2022HUD_SpawnMenu", function()
             compass:SetName("Compass Settings")
             
             compass:CheckBox("Warzone Length Compass", "MW2022HUD_CompassWZLength")
-            compass:ControlHelp("Use a shorter length for the compass similar to Warzone/DMZ in Modern Warfare II.")
+            compass:ControlHelp("Use a shorter length for the compass similar to Warzone/DMZ in Modern Warfare II.\n- A map change or reload is required for this setting to take effect.")
 
         panel:CheckBox("Minimap", "MW2022HUD_EnableMinimap")
         panel:ControlHelp("Enable the minimap.\n- GMinimap is required for this feature.\n- WARNING: Some other addons' UI may be displayed on the minimap. This is out of my control as far as I'm aware, unfortunately.")
@@ -117,4 +117,4 @@ hook.Add("PopulateToolMenu", "MW2022HUD_SpawnMenu", function()
     end)
 end)
 
-print("[MWIIHUD] Spawnmenu settings loaded")
+MW2022HUD.MsgC(Color(191,191,191), "Spawnmenu settings set up\n")

@@ -103,4 +103,4 @@ end)
 cvars.AddChangeCallback("cl_playercolor",
     function(convar, oldVal, newVal) plyColor = Vector(newVal):ToColor() plyColorHSVValue = select(3, plyColor:ToHSV()) end, "MW2022HUDPlayerColorChange")
 
-print("[MWIIHUD] Vitals module loaded")
+MW2022HUD.MsgC(Color(191,191,191), "Module loaded: Health/Armor\n")

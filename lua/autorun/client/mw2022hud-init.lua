@@ -1,5 +1,17 @@
+-- this is the very first things we run (before even setting up MW2022HUD.MsgC) so we can't use that
+-- aka the few times we intentionally use raw MsgC
+MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(255,255,255), " mw2022hud - Modern Warfare II Heads Up Display recreation\n")
+MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(255,255,255), " Written and some assets by UnderSet, MWII assets by Activision and Infinity Ward\n")
+MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(255,255,255), " See README on GitHub or Workshop page for more info and additional credits\n")
+MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(191,191,191), " ---------------------------------------------------------\n")
+MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(255,255,255), " Beginning HUD initialization\n")
+
+local initstart = SysTime()
+
 MW2022HUD = MW2022HUD or {}
 MW2022HUD.Debug = {} -- don't touch this one, will ya?
+
+local dev = GetConVar("developer")
 
 MW2022HUD.Enable = CreateClientConVar("MW2022HUD_Enable", 1, true, true, "Enable the MW2022 HUD.", 0, 1)
 MW2022HUD.EnableCompass = CreateClientConVar("MW2022HUD_EnableCompass", 1, true, true, "Enable the compass at the top of the screen.", 0, 1)
@@ -15,6 +27,17 @@ MW2022HUD.CompassWZLength = CreateClientConVar("MW2022HUD_CompassWZLength", 1, t
 -- render targets CAN'T change size later; the compass uses a render target
 -- (and yep, the compass scales differently to every other element!)
 MW2022HUD.CompassScale = math.min(ScrW() / 1280, 1)
+
+MW2022HUD.MsgC = function(...)
+    -- convenience wrapper around MsgC
+    MsgC(Color(123, 196, 45), "[MWIIHUD] ", ...)
+end
+
+MW2022HUD.DebugMsgC = function(...)
+    -- thin wrapper around MsgC for debug-only text
+    if !dev:GetBool() then return end
+    MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(255,255,0), " <DEBUG> ", ...)
+end
 
 MW2022HUD.SetupBounds = function()
     MW2022HUD.ScreenWidth = ScrW()
@@ -47,8 +70,6 @@ MW2022HUD.NullFunction = function() end
 
 MW2022HUD.SetupBounds()
 
-print("[MWIIHUD] Initializing HUD... --------------------------------")
-
 include("mw2022hud/fonts.lua")
 include("mw2022hud/compass.lua")
 include("mw2022hud/ammo.lua")
@@ -66,8 +87,6 @@ for _, v in ipairs(file.Find("mw2022hud/AddonIntegrations/*.lua", "LUA")) do
     include("mw2022hud/AddonIntegrations/" .. v)
 end
 
-print("[MWIIHUD] HUD initialization complete ------------------------")
-
 cvars.AddChangeCallback("MW2022HUD_XBounds", MW2022HUD.SetupBounds)
 cvars.AddChangeCallback("MW2022HUD_YBounds", MW2022HUD.SetupBounds)
 
@@ -75,3 +94,5 @@ hook.Add("OnScreenSizeChanged", "MW2022HUDScreenSizeChanged", function()
     MW2022HUD.SetupBounds()
     include("mw2022hud/fonts.lua")
 end)
+
+MW2022HUD.MsgC(Color(255,255,255), string.format("HUD initialization complete - took %sms\n", math.floor((SysTime() - initstart) * 1000)))

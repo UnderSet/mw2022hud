@@ -364,4 +364,4 @@ concommand.Add("MW2022HUD_AddWeaponIconOffset", function(ply, cmd, args)
     WeaponIconNeedsRedraw = true
 end)
 
-print("[MWIIHUD] Weapon info module loaded")
+MsgC(Color(123, 196, 45), "[MWIIHUD]", Color(191,191,191), " Module loaded: Weapon info\n")
