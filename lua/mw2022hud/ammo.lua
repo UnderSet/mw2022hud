@@ -130,8 +130,8 @@ MW2022HUD.Ammo.SetupWeaponData = function()
         -- the reason for this...deranged chicanery is that string.format throws a fit with a null string, and also we want it to NOT go thru string.format if not an ammo type
         --   (e.g. melee)
         weaponData.AmmoTypeName = MW2022HUD.WeaponExtensions.GetCaliber(MW2022HUD.Weapon) or
-            game.GetAmmoName(weaponData.AmmoType) and language.GetPhrase(string.format("%s_ammo", game.GetAmmoName(weaponData.AmmoType))) or "Melee/Tool"
-        weaponData.AmmoTypeAltName = game.GetAmmoName(weaponData.AmmoTypeAlt) and language.GetPhrase(string.format("%s_ammo", game.GetAmmoName(weaponData.AmmoTypeAlt))) or "Melee/Tool"
+            game.GetAmmoName(weaponData.AmmoType) and language.GetPhrase(string.format("%s_ammo", game.GetAmmoName(weaponData.AmmoType))) or ""
+        weaponData.AmmoTypeAltName = game.GetAmmoName(weaponData.AmmoTypeAlt) and language.GetPhrase(string.format("%s_ammo", game.GetAmmoName(weaponData.AmmoTypeAlt))) or ""
     end        
 
     weaponData.FireModeSupport, weaponData.FireMode, weaponData.FireType, weaponData.Safety, weaponData.UBGL = MW2022HUD.WeaponExtensions.GetFiremode(MW2022HUD.Weapon)
