@@ -286,16 +286,16 @@ end
 
 MW2022HUD.MsgC(Color(191,191,191), "Module loaded: Scores\n")
 
-MW2022HUD.Score.AddSource("mw2022huddebug", false, function()
-    local MaxScore = 1000
-    local AllyScore = math.Round(CurTime() % 10 * 100)
-    local EnemyScore = 1000 - AllyScore
-    local RemainingTime = 3600 - CurTime() % 3600
-    local FFAPos = false
-    local FFAEnemyLead = "thetunaaaa"
-    return MaxScore, AllyScore, EnemyScore, RemainingTime, FFAPos, FFAEnemyLead
-end)
-MW2022HUD.Score.SetActiveSource("mw2022huddebug")
-MW2022HUD.Score.SetActiveSource("mw2022huddebug")
-MW2022HUD.Score.SetGamemodeNameOverride("MWII HUD DEBUG")
-PrintTable(ScoreSources)
+-- MW2022HUD.Score.AddSource("mw2022huddebug", false, function()
+--     local MaxScore = 250
+--     local AllyScore = math.Round(CurTime() % 10 * 100)
+--     local EnemyScore = 1000 - AllyScore
+--     local RemainingTime = 3600 - CurTime() % 3600
+--     local FFAPos = false
+--     local FFAEnemyLead = "thetunaaaa"
+--     return MaxScore, AllyScore, EnemyScore, RemainingTime, FFAPos, FFAEnemyLead
+-- end)
+-- MW2022HUD.Score.SetActiveSource("mw2022huddebug")
+-- MW2022HUD.Score.SetActiveSource("mw2022huddebug")
+-- MW2022HUD.Score.SetGamemodeNameOverride("MWII HUD DEBUG")
+-- PrintTable(ScoreSources)
