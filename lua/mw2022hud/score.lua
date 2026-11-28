@@ -270,6 +270,8 @@ MW2022HUD.Score.SetActiveSource = function(name)
     MW2022HUD.DebugMsgC("score.lua: Set score source to " .. tostring(name) .. "\n")
 end
 
+MW2022HUD.Score.GetActiveSource = function() return ActiveScoreSource end
+
 MW2022HUD.Score.SetGamemodeNameOverride = function(name)
     OverrideGamemodeName = name
 end
